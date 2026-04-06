@@ -12,10 +12,8 @@ const path = require('path');
 const iconv = require('iconv-lite');
 const { parse } = require('csv-parse/sync');
 
-// --- 転送先電話番号 ---
-const TRANSFER_PHONES = [
-  '08075810552', '0463746531', '08035369556', '08032059925'
-];
+// --- 転送先電話番号（携帯転送） ---
+const TRANSFER_PHONE = '08075810552';
 
 // --- ACD グループ名マッピング ---
 const ACD_NAMES = { '8002': 'tablet', '8003': 'comic', '8004': 'other' };
@@ -98,7 +96,7 @@ function extractTransfers(cdrRows) {
     const type = getCol(row, '種類') || '';
     const operator = getCol(row, 'オペレータ') || '';
     const dest = getCol(row, '着信先') || '';
-    return type.includes('PV発信') && operator === '-' && TRANSFER_PHONES.some(p => dest.includes(p));
+    return type.includes('PV発信') && operator === '-' && dest.includes(TRANSFER_PHONE);
   }).map(row => {
     const datetime = getCol(row, '発着信時間') || '';
     const status = getCol(row, '状態') || '';
@@ -135,7 +133,7 @@ function processDailySummary(summaryRows, transfers, year, month) {
     const rate = calls > 0 ? Math.round((answered / calls) * 1000) / 10 : 0;
 
     // 転送件数（その日の分）
-    const dayTransfers = transfers.filter(t => t.date === dateStr);
+    const dayTransfers = transfers.filter(t => t.date === dateStr && t.hour >= 17 && t.hour < 19);
     const transferCount = dayTransfers.length;
 
     results.push({
@@ -350,17 +348,19 @@ function main() {
   const prevTotalRate = prevTotalCalls > 0 ? Math.round((prevTotalAnswered / prevTotalCalls) * 1000) / 10 : 0;
   const prevDailyAvg = prevActiveDays > 0 ? Math.round((prevTotalCalls / prevActiveDays) * 10) / 10 : 0;
 
-  // 転送集計
-  const curTransferTotal = curTransfers.length;
-  const curTransferDays = new Set(curTransfers.map(t => t.date)).size;
+  // 転送集計（17:00〜19:00のみ）
+  const curTransfers1719 = curTransfers.filter(t => t.hour >= 17 && t.hour < 19);
+  const curTransferTotal = curTransfers1719.length;
+  const curTransferDays = new Set(curTransfers1719.map(t => t.date)).size;
   const curTransferAvg = curTransferDays > 0 ? Math.round((curTransferTotal / curTransferDays) * 10) / 10 : 0;
-  const curTransferAnswered = curTransfers.filter(t => t.answered).length;
+  const curTransferAnswered = curTransfers1719.filter(t => t.answered).length;
   const curTransferRate = curTransferTotal > 0 ? Math.round((curTransferAnswered / curTransferTotal) * 1000) / 10 : 0;
 
-  const prevTransferTotal = prevTransfers.length;
-  const prevTransferDays = new Set(prevTransfers.map(t => t.date)).size;
+  const prevTransfers1719 = prevTransfers.filter(t => t.hour >= 17 && t.hour < 19);
+  const prevTransferTotal = prevTransfers1719.length;
+  const prevTransferDays = new Set(prevTransfers1719.map(t => t.date)).size;
   const prevTransferAvg = prevTransferDays > 0 ? Math.round((prevTransferTotal / prevTransferDays) * 10) / 10 : 0;
-  const prevTransferAnswered = prevTransfers.filter(t => t.answered).length;
+  const prevTransferAnswered = prevTransfers1719.filter(t => t.answered).length;
   const prevTransferRate = prevTransferTotal > 0 ? Math.round((prevTransferAnswered / prevTransferTotal) * 1000) / 10 : 0;
 
   // 昨日・今日

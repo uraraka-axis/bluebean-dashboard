@@ -125,7 +125,9 @@ def extract_transfers_weekday(cdr_rows):
         type_val = get_col(row, '種類') or ''
         dest = get_col(row, '着信先') or ''
         if 'PV発信' in type_val and TRANSFER_PHONE_WEEKDAY in dest:
-            results.append(_parse_transfer_record(row))
+            rec = _parse_transfer_record(row)
+            if 17 <= rec['hour'] < 19:
+                results.append(rec)
     return results
 
 
