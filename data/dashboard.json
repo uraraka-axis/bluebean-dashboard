@@ -1,5 +1,5 @@
 {
-  "generated": "2026-04-06T08:37:30.771Z",
+  "generated": "2026-04-06T09:12:44.652Z",
   "currentMonth": {
     "year": 2026,
     "month": 4,
@@ -47,9 +47,9 @@
       "rate": 100
     },
     "prev": {
-      "total": 92,
-      "dailyAvg": 4.2,
-      "rate": 92.4
+      "total": 48,
+      "dailyAvg": 2.5,
+      "rate": 100
     }
   },
   "daily": {
@@ -530,7 +530,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 16
+        "transferCount": 0
       },
       {
         "date": "2026-03-27",
@@ -572,7 +572,7 @@
         "abandoned": 7,
         "abandonRate": 38.9,
         "overflow": 0,
-        "transferCount": 3
+        "transferCount": 2
       },
       {
         "date": "2026-03-24",
@@ -628,7 +628,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 6
+        "transferCount": 0
       },
       {
         "date": "2026-03-20",
@@ -824,7 +824,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 21
+        "transferCount": 0
       },
       {
         "date": "2026-03-06",
@@ -1009,9 +1009,9 @@
       "rate": 100
     },
     "prev": {
-      "total": 92,
-      "dailyAvg": 4.2,
-      "rate": 92.4
+      "total": 48,
+      "dailyAvg": 2.5,
+      "rate": 100
     }
   },
   "dowAverage": {
