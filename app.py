@@ -368,12 +368,15 @@ with tab_acd:
         horizontal=True, key="acd_month", label_visibility="collapsed"
     )
     acd_key = "current" if "今月" in acd_month_sel else "prev"
+    acd_month_label = cur_month["label"] if acd_key == "current" else prev_month["label"]
     acd_list = data["acd"][acd_key]
     acd_transfer = data["acdTransfer"][acd_key]
     bb_summary = data["bbSummary"][acd_key]
     active_days = bb_summary.get("activeDays", 1) or 1
 
     # ACDカード
+    st.markdown(f'<div class="section-title">ACD別 サマリー（{acd_month_label}）</div>', unsafe_allow_html=True)
+
     if acd_list:
         cols = st.columns(len(acd_list))
         acd_colors = {"tablet": "#3b82f6", "comic": "#8b5cf6", "other": "#f59e0b"}
@@ -382,13 +385,11 @@ with tab_acd:
             with cols[i]:
                 color = acd_colors.get(acd["name"], "#6b7280")
                 rate_cls, rate_col = rate_color(acd["rate"])
-                abn_cls, abn_col = rate_color(100 - acd["abandonRate"])  # inverse for abandon
                 st.markdown(f"""
                 <div class="acd-card">
                     <div class="acd-name"><span style="color:{color}">●</span> {acd['name']}（{acd['groupId']}）</div>
                     <div style="display:flex;gap:8px;margin-bottom:8px">
                         <div style="flex:1;text-align:center">
-                            <div style="font-size:12px;color:#6b7280">今月</div>
                             <div style="display:flex;justify-content:space-around;margin-top:4px">
                                 <div><div style="font-size:20px;font-weight:700">{acd['calls']}</div><div style="font-size:11px;color:#6b7280">受電数</div></div>
                                 <div><div style="font-size:20px;font-weight:700">{acd['dailyAvg']}</div><div style="font-size:11px;color:#6b7280">1日平均</div></div>
@@ -398,7 +399,7 @@ with tab_acd:
                         </div>
                     </div>
                     <div style="font-size:12px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:8px">
-                        平均通話: {acd['avgTalkTime']} ／ 平均待ち: {acd['avgWaitTime']}
+                        平均通話時間: {acd['avgTalkTime']}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -406,10 +407,10 @@ with tab_acd:
         st.markdown("")
 
     # ACD別テーブル
-    st.markdown('<div class="section-title">ACD別 実績一覧</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">ACD別 実績一覧（{acd_month_label}）</div>', unsafe_allow_html=True)
 
     if acd_list:
-        header = "<tr><th>ACDグループ</th><th>受電数</th><th>1日平均</th><th>応答数</th><th>応答率</th><th>放棄数</th><th>放棄率</th><th>溢れ呼</th><th>平均通話時間</th><th>平均待ち時間</th></tr>"
+        header = "<tr><th>ACDグループ</th><th>受電数</th><th>1日平均</th><th>応答数</th><th>応答率</th><th>放棄数</th><th>放棄率</th><th>溢れ呼</th><th>平均通話時間</th></tr>"
         rows = ""
         acd_colors_dot = {"tablet": "#3b82f6", "comic": "#8b5cf6", "other": "#f59e0b"}
         for acd in acd_list:
@@ -421,7 +422,7 @@ with tab_acd:
                 <td>{acd['calls']}</td><td>{acd['dailyAvg']}</td><td>{acd['answered']}</td>
                 <td>{rate_html}</td>
                 <td>{acd['abandoned']}</td><td>{abandon_html}</td><td>{acd['overflow']}</td>
-                <td>{acd['avgTalkTime']}</td><td>{acd['avgWaitTime']}</td>
+                <td>{acd['avgTalkTime']}</td>
             </tr>"""
 
         # 転送行
@@ -435,7 +436,7 @@ with tab_acd:
             <td>{int(acd_transfer['total'] * acd_transfer['rate'] / 100) if acd_transfer['total'] > 0 else 0}</td>
             <td>{transfer_rate_html}</td>
             <td>{transfer_abandon}</td><td>{abandon_badge(transfer_abandon_rate) if acd_transfer['total'] > 0 else '-'}</td>
-            <td>-</td><td>-</td>
+            <td>-</td>
         </tr>"""
 
         st.markdown(f'<table class="styled-table">{header}{rows}</table>', unsafe_allow_html=True)
@@ -443,13 +444,8 @@ with tab_acd:
     st.markdown("")
 
     # 曜日別平均
-    st.markdown('<div class="section-title">曜日別 平均受電数</div>', unsafe_allow_html=True)
-    dow_month_sel = st.radio(
-        "月選択", [f'今月（{cur_month["label"]}）', f'先月（{prev_month["label"]}）'],
-        horizontal=True, key="dow_month", label_visibility="collapsed"
-    )
-    dow_key = "current" if "今月" in dow_month_sel else "prev"
-    dow = data["dowAverage"][dow_key]
+    st.markdown(f'<div class="section-title">曜日別 平均受電数（{acd_month_label}）</div>', unsafe_allow_html=True)
+    dow = data["dowAverage"][acd_key]
 
     dow_order = ["月", "火", "水", "木", "金", "土", "日"]
     header = "<tr><th>全体</th>" + "".join(f"<th>{format_dow_name(d)}</th>" for d in dow_order) + "</tr>"
