@@ -244,31 +244,27 @@ def process_agent_report(agent_rows):
             continue
         login_id = get_col(row, 'ログインID') or ''
         talk_count = get_col_int(row, '通話回数')
-        accept_count = get_col_int(row, '受付回数')
-        talk_time_str = get_col(row, '通話時間') or '00:00:00'
-        after_work_str = get_col(row, '後処理時間') or '00:00:00'
-        util_str = get_col(row, '稼働率') or '0'
+        talk_time_str = get_col(row, '通話時間合計') or get_col(row, '通話時間') or '00:00:00'
+        after_work_str = get_col(row, '後処理時間合計') or get_col(row, '後処理時間') or '00:00:00'
+        after_count = get_col_int(row, '後処理回数') or talk_count
+        break_time_str = get_col(row, '休憩時間合計') or '00:00:00'
+        break_avg_str = get_col(row, '休憩時間平均') or '00:00:00'
 
         talk_sec = time_to_sec(talk_time_str)
         avg_talk_sec = round(talk_sec / talk_count) if talk_count > 0 else 0
         after_sec = time_to_sec(after_work_str)
-        avg_after_sec = round(after_sec / accept_count) if accept_count > 0 else 0
-
-        try:
-            utilization = float(util_str)
-        except ValueError:
-            utilization = 0
+        avg_after_sec = round(after_sec / after_count) if after_count > 0 else 0
 
         results.append({
             'loginId': login_id,
             'name': name,
             'talkCount': talk_count,
-            'acceptCount': accept_count,
             'talkTimeTotal': talk_time_str,
             'avgTalkTime': sec_to_min_sec(avg_talk_sec),
             'afterWorkTotal': after_work_str,
             'avgAfterWork': sec_to_min_sec(avg_after_sec),
-            'utilization': utilization,
+            'breakTimeTotal': break_time_str,
+            'breakTimeAvg': break_avg_str,
         })
     return results
 

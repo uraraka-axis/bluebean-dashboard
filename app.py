@@ -493,7 +493,7 @@ with tab_operator:
         }
         acd_colors_dot = {"tablet": "#3b82f6", "comic": "#8b5cf6", "other": "#f59e0b", "転送": "#6366f1"}
 
-        header = "<tr><th>オペレーター</th><th>所属ACD</th><th>通話回数</th><th>1日平均</th><th>受付回数</th><th>通話時間合計</th><th>平均通話時間</th><th>後処理時間合計</th><th>平均後処理時間</th></tr>"
+        header = "<tr><th>オペレーター</th><th>所属ACD</th><th>通話回数</th><th>1日平均</th><th>通話時間合計</th><th>平均通話時間</th><th>後処理時間合計</th><th>平均後処理時間</th><th>休憩合計</th><th>休憩平均</th></tr>"
         rows = ""
         for agent in agents:
             acd_name = agent_acd_map.get(agent["name"], agent["name"])
@@ -501,9 +501,10 @@ with tab_operator:
             rows += f"""<tr>
                 <td><strong>{agent['name']}</strong></td>
                 <td><span style="color:{color}">●</span> {acd_name}</td>
-                <td>{agent['talkCount']}</td><td>{agent['dailyAvg']}</td><td>{agent['acceptCount']}</td>
+                <td>{agent['talkCount']}</td><td>{agent['dailyAvg']}</td>
                 <td>{agent['talkTimeTotal']}</td><td>{agent['avgTalkTime']}</td>
                 <td>{agent['afterWorkTotal']}</td><td>{agent['avgAfterWork']}</td>
+                <td>{agent.get('breakTimeTotal', '-')}</td><td>{agent.get('breakTimeAvg', '-')}</td>
             </tr>"""
 
         # 転送行（平日）
@@ -512,7 +513,7 @@ with tab_operator:
             <td><span style="color:#6366f1">●</span> 転送</td>
             <td style="color:#6366f1">{acd_transfer_agent['total']}</td>
             <td style="color:#6366f1">{acd_transfer_agent['dailyAvg']}</td>
-            <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+            <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
         </tr>"""
 
         st.markdown(f'<table class="styled-table">{header}{rows}</table>', unsafe_allow_html=True)
