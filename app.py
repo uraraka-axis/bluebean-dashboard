@@ -240,7 +240,7 @@ if generated:
 st.markdown(f"""
 <div class="main-header">
     <h1>BlueBeanダッシュボード</h1>
-    <div class="meta">最終更新: {gen_display} ／ データ取得: {'手動インポート' if data.get('source') == 'manual_import' else '日次処理（9:00）or手動インポート'}</div>
+    <div class="meta">最終更新: {gen_display} ／ データ取得: {'手動インポート' if data.get('source') == 'manual_import' else '日次処理（9:00）'}</div>
 </div>
 """, unsafe_allow_html=True)
 
