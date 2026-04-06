@@ -67,9 +67,9 @@ html, body, [class*="css"] {
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     border: 1px solid #e5e7eb;
 }
-.kpi-card .label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+.kpi-card .label { font-size: 13px; color: #6b7280; margin-bottom: 4px; }
 .kpi-card .value { font-size: 28px; font-weight: 700; color: #111827; }
-.kpi-card .sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.kpi-card .sub { font-size: 13px; color: #6b7280; margin-top: 4px; }
 .kpi-card .value.good { color: #059669; }
 .kpi-card .value.warn { color: #d97706; }
 .kpi-card .value.bad { color: #dc2626; }
@@ -97,7 +97,7 @@ html, body, [class*="css"] {
     margin-bottom: 16px;
 }
 .section-title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     color: #374151;
     border-left: 4px solid #1a56db;
@@ -106,27 +106,33 @@ html, body, [class*="css"] {
 }
 
 /* 応答率バー */
-.rate-bar {
+.rate-bar-bg {
     display: inline-block;
+    width: 80px;
     height: 8px;
     border-radius: 4px;
     margin-right: 8px;
     vertical-align: middle;
 }
+.rate-bar-fill {
+    display: block;
+    height: 8px;
+    border-radius: 4px;
+}
 
 /* テーブル */
-.styled-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.styled-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .styled-table th {
     background: #f9fafb;
     color: #6b7280;
     font-weight: 500;
-    padding: 10px 12px;
+    padding: 12px 14px;
     text-align: right;
     border-bottom: 2px solid #e5e7eb;
 }
 .styled-table th:first-child { text-align: left; }
 .styled-table td {
-    padding: 10px 12px;
+    padding: 12px 14px;
     text-align: right;
     border-bottom: 1px solid #f3f4f6;
 }
@@ -134,9 +140,9 @@ html, body, [class*="css"] {
 .styled-table tr:hover { background: #f9fafb; }
 
 /* 放棄率バッジ */
-.badge-red { background: #fef2f2; color: #dc2626; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
-.badge-orange { background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
-.badge-green { background: #f0fdf4; color: #059669; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.badge-red { background: #fef2f2; color: #dc2626; padding: 2px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+.badge-orange { background: #fffbeb; color: #d97706; padding: 2px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+.badge-green { background: #f0fdf4; color: #059669; padding: 2px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; }
 
 /* ACD カード */
 .acd-card {
@@ -185,7 +191,7 @@ def rate_bar_html(rate):
     cls, color = rate_color(rate)
     width = min(rate, 100)
     bg = "#fee2e2" if cls == "bad" else ("#fef3c7" if cls == "warn" else "#d1fae5")
-    return f'<span class="rate-bar" style="width:80px;background:{bg}"><span class="rate-bar" style="width:{width * 0.8}px;background:{color}"></span></span>{rate}%'
+    return f'<span class="rate-bar-bg" style="background:{bg}"><span class="rate-bar-fill" style="width:{width * 0.8}px;background:{color}"></span></span>{rate}%'
 
 
 def abandon_badge(rate):
