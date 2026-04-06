@@ -5,8 +5,10 @@ data/dashboard.json を読み込んで表示
 
 import json
 import os
+from datetime import datetime, date
 import streamlit as st
 import pandas as pd
+import csv_processor
 
 st.set_page_config(
     page_title="BlueBeanダッシュボード",
@@ -238,12 +240,12 @@ if generated:
 st.markdown(f"""
 <div class="main-header">
     <h1>BlueBeanダッシュボード</h1>
-    <div class="meta">最終更新: {gen_display} ／ データ取得: 自動（日次）</div>
+    <div class="meta">最終更新: {gen_display} ／ データ取得: {'手動インポート' if data.get('source') == 'manual_import' else '自動（日次）'}</div>
 </div>
 """, unsafe_allow_html=True)
 
 # タブ
-tab_overall, tab_acd, tab_operator = st.tabs(["全体", "ACD別", "オペレーター別"])
+tab_overall, tab_acd, tab_operator, tab_import = st.tabs(["全体", "ACD別", "オペレーター別", "データインポート"])
 
 
 # ==================== 全体タブ ====================
@@ -525,3 +527,145 @@ with tab_operator:
     rows = f"<tr><td><strong>合計</strong></td>{vals}</tr>"
     st.markdown(f'<table class="styled-table">{header}{rows}</table>', unsafe_allow_html=True)
     st.caption("※ 稼働日のみの平均。受電0件の日（休業日等）は除外。")
+
+
+# ==================== データインポートタブ ====================
+with tab_import:
+    st.markdown('<div class="section-title">データインポート</div>', unsafe_allow_html=True)
+    st.markdown("BlueBeanからダウンロードしたCSVファイル（Shift_JIS）をアップロードしてください。")
+
+    st.markdown("")
+
+    # 対象月の選択肢（過去6ヶ月分）
+    today_d = date.today()
+    month_options = []
+    for offset in range(0, 6):
+        y = today_d.year
+        m = today_d.month - offset
+        while m <= 0:
+            m += 12
+            y -= 1
+        month_options.append(f"{y}年{m}月")
+
+    col_cur, col_prev = st.columns(2)
+
+    with col_cur:
+        st.markdown("#### 今月データ")
+        cur_month_sel = st.selectbox("対象月", month_options, index=0, key="cur_month_sel")
+        cur_y = int(cur_month_sel.split("年")[0])
+        cur_m = int(cur_month_sel.split("年")[1].replace("月", ""))
+
+        st.markdown("")
+        cur_summary_file = st.file_uploader("ACD日別サマリー", type=["csv"], key="cur_summary")
+        cur_acd_file = st.file_uploader("ACD集計レポート", type=["csv"], key="cur_acd")
+        cur_cdr_file = st.file_uploader("CDR発着信履歴", type=["csv"], key="cur_cdr")
+        cur_agent_file = st.file_uploader("オペレーターレポート", type=["csv"], key="cur_agent")
+
+    with col_prev:
+        st.markdown("#### 先月データ")
+        default_prev = 1 if len(month_options) > 1 else 0
+        prev_month_sel = st.selectbox("対象月", month_options, index=default_prev, key="prev_month_sel")
+        prev_y = int(prev_month_sel.split("年")[0])
+        prev_m = int(prev_month_sel.split("年")[1].replace("月", ""))
+
+        st.markdown("")
+        prev_summary_file = st.file_uploader("ACD日別サマリー", type=["csv"], key="prev_summary")
+        prev_acd_file = st.file_uploader("ACD集計レポート", type=["csv"], key="prev_acd")
+        prev_cdr_file = st.file_uploader("CDR発着信履歴", type=["csv"], key="prev_cdr")
+        prev_agent_file = st.file_uploader("オペレーターレポート", type=["csv"], key="prev_agent")
+
+    st.markdown("---")
+
+    # アップロード状況
+    cur_files_uploaded = [f for f in [cur_summary_file, cur_acd_file, cur_cdr_file, cur_agent_file] if f]
+    prev_files_uploaded = [f for f in [prev_summary_file, prev_acd_file, prev_cdr_file, prev_agent_file] if f]
+    total_uploaded = len(cur_files_uploaded) + len(prev_files_uploaded)
+
+    if total_uploaded > 0:
+        status_parts = []
+        if cur_files_uploaded:
+            status_parts.append(f"今月: {len(cur_files_uploaded)}/4ファイル")
+        if prev_files_uploaded:
+            status_parts.append(f"先月: {len(prev_files_uploaded)}/4ファイル")
+        st.info(f"アップロード済み — {' ／ '.join(status_parts)}")
+
+    # 処理実行ボタン
+    can_process = total_uploaded > 0
+    if st.button("データを処理して更新", disabled=not can_process, type="primary", use_container_width=True):
+        try:
+            def parse_upload(file_obj):
+                if file_obj is None:
+                    return None
+                return csv_processor.read_csv_bytes(file_obj.read())
+
+            cur_csv = {
+                'acd_summary': parse_upload(cur_summary_file),
+                'acd_report': parse_upload(cur_acd_file),
+                'cdr': parse_upload(cur_cdr_file),
+                'agent_report': parse_upload(cur_agent_file),
+            }
+            prev_csv = {
+                'acd_summary': parse_upload(prev_summary_file),
+                'acd_report': parse_upload(prev_acd_file),
+                'cdr': parse_upload(prev_cdr_file),
+                'agent_report': parse_upload(prev_agent_file),
+            }
+
+            result = csv_processor.build_dashboard(cur_csv, prev_csv, cur_y, cur_m, prev_y, prev_m)
+
+            # 未アップロード側は既存データで補完
+            existing = load_data() or {}
+
+            if not any(cur_csv.values()) and existing:
+                for key in ['bbSummary', 'transferSummary', 'acdTransfer']:
+                    if key in existing:
+                        result[key]['current'] = existing[key]['current']
+                for key in ['daily', 'acd', 'agents', 'dowAverage']:
+                    if key in existing:
+                        result[key]['current'] = existing[key]['current']
+                if 'yesterday' in existing:
+                    result['yesterday'] = existing['yesterday']
+
+            if not any(prev_csv.values()) and existing:
+                for key in ['bbSummary', 'transferSummary', 'acdTransfer']:
+                    if key in existing:
+                        result[key]['prev'] = existing[key]['prev']
+                for key in ['daily', 'acd', 'agents', 'dowAverage']:
+                    if key in existing:
+                        result[key]['prev'] = existing[key]['prev']
+
+            # dashboard.json に保存
+            json_path = os.path.join(os.path.dirname(__file__), "data", "dashboard.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+
+            st.cache_data.clear()
+
+            st.success(f"データを更新しました（今月: {cur_y}年{cur_m}月 ／ 先月: {prev_y}年{prev_m}月）")
+
+            # 結果プレビュー
+            bb = result['bbSummary']['current']
+            tr = result['transferSummary']['current']
+            prev_bb = result['bbSummary']['prev']
+            cols = st.columns(4)
+            with cols[0]:
+                st.metric("今月受電合計", bb['total'])
+            with cols[1]:
+                st.metric("今月応答率", f"{bb['rate']}%")
+            with cols[2]:
+                st.metric("今月転送件数", tr['total'])
+            with cols[3]:
+                st.metric("先月受電合計", prev_bb['total'])
+
+            st.download_button(
+                "dashboard.json をダウンロード",
+                data=json.dumps(result, ensure_ascii=False, indent=2),
+                file_name="dashboard.json",
+                mime="application/json",
+            )
+
+        except Exception as e:
+            st.error(f"処理エラー: {e}")
+
+    if not can_process:
+        st.caption("※ 最低1つのCSVファイルをアップロードしてください。")
