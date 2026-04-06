@@ -1,10 +1,10 @@
 name: BlueBean データ更新
 
 on:
-  schedule:
-    # 毎朝 8:00 JST = 23:00 UTC（前日）
-    - cron: '0 23 * * *'
-  workflow_dispatch: # 手動実行用
+  # schedule:
+  #   # 毎朝 8:00 JST = 23:00 UTC（前日）
+  #   - cron: '0 23 * * *'
+  workflow_dispatch: # 手動実行用のみ（自動実行は日付範囲の問題があるため停止中）
 
 permissions:
   contents: write
