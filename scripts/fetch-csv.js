@@ -51,26 +51,40 @@ function lastMonthRange() {
   return { from: fmt(firstPrev), to: fmt(lastDayPrev) };
 }
 
-async function waitAndClick(page, selector, options = {}) {
-  await page.waitForSelector(selector, { timeout: 15000, ...options });
-  await page.click(selector);
+// 日付入力（daterangepickerを回避してJSで直接セット）
+async function setDateRange(page, startDate, endDate) {
+  await page.evaluate(({ s, e }) => {
+    const startEl = document.querySelector('input[name="data[QueueCdr][start_date]"]')
+      || document.querySelector('#start_date')
+      || document.querySelector('input[name="start_date"]');
+    const endEl = document.querySelector('input[name="data[QueueCdr][end_date]"]')
+      || document.querySelector('#end_date')
+      || document.querySelector('input[name="end_date"]');
+    if (startEl) { startEl.value = s; startEl.dispatchEvent(new Event('change', { bubbles: true })); }
+    if (endEl) { endEl.value = e; endEl.dispatchEvent(new Event('change', { bubbles: true })); }
+    // daterangepickerを閉じる
+    document.querySelectorAll('.daterangepicker').forEach(el => el.style.display = 'none');
+  }, { s: startDate, e: endDate });
+  // 念のためEscで閉じる
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
 }
 
-async function downloadCSV(page, url, savePath) {
-  const [download] = await Promise.all([
-    page.waitForEvent('download', { timeout: 30000 }),
-    page.goto(url),
-  ]).catch(async () => {
-    // CSVダウンロードがnavigationではなくdownloadイベントの場合
-    return [null];
-  });
-
-  if (download) {
-    await download.saveAs(savePath);
-    console.log(`  保存: ${savePath}`);
-    return true;
-  }
-  return false;
+// CDR用の日付入力（フィールド名が異なる）
+async function setCdrDateRange(page, startDate, endDate) {
+  await page.evaluate(({ s, e }) => {
+    const startEl = document.querySelector('input[name="data[Cdr][start_date]"]')
+      || document.querySelector('#start_date')
+      || document.querySelector('input[name="start_date"]');
+    const endEl = document.querySelector('input[name="data[Cdr][end_date]"]')
+      || document.querySelector('#end_date')
+      || document.querySelector('input[name="end_date"]');
+    if (startEl) { startEl.value = s; startEl.dispatchEvent(new Event('change', { bubbles: true })); }
+    if (endEl) { endEl.value = e; endEl.dispatchEvent(new Event('change', { bubbles: true })); }
+    document.querySelectorAll('.daterangepicker').forEach(el => el.style.display = 'none');
+  }, { s: startDate, e: endDate });
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(300);
 }
 
 async function main() {
@@ -108,21 +122,20 @@ async function main() {
     await page.goto(`${BB_URL}/admin/queue_cdrs/index/`);
     await page.waitForLoadState('networkidle');
 
-    // 日付範囲を設定
-    await page.fill('input[name="data[QueueCdr][start_date]"], #start_date, input[name="start_date"]', monthStart);
-    await page.fill('input[name="data[QueueCdr][end_date]"], #end_date, input[name="end_date"]', todayStr);
+    // 日付範囲を設定（daterangepicker回避）
+    await setDateRange(page, monthStart, todayStr);
 
     // 検索実行
     const searchBtn = page.locator('button:has-text("検索"), input[value="検索"], button:has-text("Search")');
     if (await searchBtn.count() > 0) {
-      await searchBtn.first().click();
+      await searchBtn.first().click({ force: true });
       await page.waitForLoadState('networkidle');
     }
 
     // CSVダウンロード
     const [dl1] = await Promise.all([
       page.waitForEvent('download', { timeout: 30000 }),
-      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
     ]);
     await dl1.saveAs(path.join(dataDir, `acd_report_${todayStr}.csv`));
     console.log(`    保存完了`);
@@ -132,18 +145,17 @@ async function main() {
     await page.goto(`${BB_URL}/admin/queue_cdrs/summary`);
     await page.waitForLoadState('networkidle');
 
-    await page.fill('input[name="data[QueueCdr][start_date]"], #start_date, input[name="start_date"]', monthStart);
-    await page.fill('input[name="data[QueueCdr][end_date]"], #end_date, input[name="end_date"]', todayStr);
+    await setDateRange(page, monthStart, todayStr);
 
     const searchBtn2 = page.locator('button:has-text("検索"), input[value="検索"], button:has-text("Search")');
     if (await searchBtn2.count() > 0) {
-      await searchBtn2.first().click();
+      await searchBtn2.first().click({ force: true });
       await page.waitForLoadState('networkidle');
     }
 
     const [dl2] = await Promise.all([
       page.waitForEvent('download', { timeout: 30000 }),
-      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
     ]);
     await dl2.saveAs(path.join(dataDir, `acd_summary_${todayStr}.csv`));
     console.log(`    保存完了`);
@@ -153,18 +165,17 @@ async function main() {
     await page.goto(`${BB_URL}/admin/cdr/index`);
     await page.waitForLoadState('networkidle');
 
-    await page.fill('input[name="data[Cdr][start_date]"], #start_date, input[name="start_date"]', monthStart);
-    await page.fill('input[name="data[Cdr][end_date]"], #end_date, input[name="end_date"]', todayStr);
+    await setCdrDateRange(page, monthStart, todayStr);
 
     const searchBtn3 = page.locator('button:has-text("検索"), input[value="検索"], button:has-text("Search")');
     if (await searchBtn3.count() > 0) {
-      await searchBtn3.first().click();
+      await searchBtn3.first().click({ force: true });
       await page.waitForLoadState('networkidle');
     }
 
     const [dl3] = await Promise.all([
       page.waitForEvent('download', { timeout: 30000 }),
-      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
     ]);
     await dl3.saveAs(path.join(dataDir, `cdr_${todayStr}.csv`));
     console.log(`    保存完了`);
@@ -174,18 +185,17 @@ async function main() {
     await page.goto(`${BB_URL}/admin/queue_cdrs/agent_report/`);
     await page.waitForLoadState('networkidle');
 
-    await page.fill('input[name="data[QueueCdr][start_date]"], #start_date, input[name="start_date"]', monthStart);
-    await page.fill('input[name="data[QueueCdr][end_date]"], #end_date, input[name="end_date"]', todayStr);
+    await setDateRange(page, monthStart, todayStr);
 
     const searchBtn4 = page.locator('button:has-text("検索"), input[value="検索"], button:has-text("Search")');
     if (await searchBtn4.count() > 0) {
-      await searchBtn4.first().click();
+      await searchBtn4.first().click({ force: true });
       await page.waitForLoadState('networkidle');
     }
 
     const [dl4] = await Promise.all([
       page.waitForEvent('download', { timeout: 30000 }),
-      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+      page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
     ]);
     await dl4.saveAs(path.join(dataDir, `agent_report_${todayStr}.csv`));
     console.log(`    保存完了`);
@@ -205,13 +215,12 @@ async function main() {
       console.log('  [ACD集計レポート - 先月]');
       await page.goto(`${BB_URL}/admin/queue_cdrs/index/`);
       await page.waitForLoadState('networkidle');
-      await page.fill('input[name="data[QueueCdr][start_date]"], #start_date, input[name="start_date"]', prev.from);
-      await page.fill('input[name="data[QueueCdr][end_date]"], #end_date, input[name="end_date"]', prev.to);
+      await setDateRange(page, prev.from, prev.to);
       const sBtnP1 = page.locator('button:has-text("検索"), input[value="検索"]');
-      if (await sBtnP1.count() > 0) { await sBtnP1.first().click(); await page.waitForLoadState('networkidle'); }
+      if (await sBtnP1.count() > 0) { await sBtnP1.first().click({ force: true }); await page.waitForLoadState('networkidle'); }
       const [dlP1] = await Promise.all([
         page.waitForEvent('download', { timeout: 30000 }),
-        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
       ]);
       await dlP1.saveAs(path.join(prevDir, `acd_report_${prev.to}.csv`));
       console.log(`    保存完了`);
@@ -220,13 +229,12 @@ async function main() {
       console.log('  [ACD日別サマリー - 先月]');
       await page.goto(`${BB_URL}/admin/queue_cdrs/summary`);
       await page.waitForLoadState('networkidle');
-      await page.fill('input[name="data[QueueCdr][start_date]"], #start_date, input[name="start_date"]', prev.from);
-      await page.fill('input[name="data[QueueCdr][end_date]"], #end_date, input[name="end_date"]', prev.to);
+      await setDateRange(page, prev.from, prev.to);
       const sBtnP2 = page.locator('button:has-text("検索"), input[value="検索"]');
-      if (await sBtnP2.count() > 0) { await sBtnP2.first().click(); await page.waitForLoadState('networkidle'); }
+      if (await sBtnP2.count() > 0) { await sBtnP2.first().click({ force: true }); await page.waitForLoadState('networkidle'); }
       const [dlP2] = await Promise.all([
         page.waitForEvent('download', { timeout: 30000 }),
-        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
       ]);
       await dlP2.saveAs(path.join(prevDir, `acd_summary_${prev.to}.csv`));
       console.log(`    保存完了`);
@@ -235,13 +243,12 @@ async function main() {
       console.log('  [CDR - 先月]');
       await page.goto(`${BB_URL}/admin/cdr/index`);
       await page.waitForLoadState('networkidle');
-      await page.fill('input[name="data[Cdr][start_date]"], #start_date, input[name="start_date"]', prev.from);
-      await page.fill('input[name="data[Cdr][end_date]"], #end_date, input[name="end_date"]', prev.to);
+      await setCdrDateRange(page, prev.from, prev.to);
       const sBtnP3 = page.locator('button:has-text("検索"), input[value="検索"]');
-      if (await sBtnP3.count() > 0) { await sBtnP3.first().click(); await page.waitForLoadState('networkidle'); }
+      if (await sBtnP3.count() > 0) { await sBtnP3.first().click({ force: true }); await page.waitForLoadState('networkidle'); }
       const [dlP3] = await Promise.all([
         page.waitForEvent('download', { timeout: 30000 }),
-        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
       ]);
       await dlP3.saveAs(path.join(prevDir, `cdr_${prev.to}.csv`));
       console.log(`    保存完了`);
@@ -250,13 +257,12 @@ async function main() {
       console.log('  [オペレーターレポート - 先月]');
       await page.goto(`${BB_URL}/admin/queue_cdrs/agent_report/`);
       await page.waitForLoadState('networkidle');
-      await page.fill('input[name="data[QueueCdr][start_date]"], #start_date, input[name="start_date"]', prev.from);
-      await page.fill('input[name="data[QueueCdr][end_date]"], #end_date, input[name="end_date"]', prev.to);
+      await setDateRange(page, prev.from, prev.to);
       const sBtnP4 = page.locator('button:has-text("検索"), input[value="検索"]');
-      if (await sBtnP4.count() > 0) { await sBtnP4.first().click(); await page.waitForLoadState('networkidle'); }
+      if (await sBtnP4.count() > 0) { await sBtnP4.first().click({ force: true }); await page.waitForLoadState('networkidle'); }
       const [dlP4] = await Promise.all([
         page.waitForEvent('download', { timeout: 30000 }),
-        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click(),
+        page.locator('a:has-text("CSV"), button:has-text("CSV")').first().click({ force: true }),
       ]);
       await dlP4.saveAs(path.join(prevDir, `agent_report_${prev.to}.csv`));
       console.log(`    保存完了`);
