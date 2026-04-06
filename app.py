@@ -493,7 +493,7 @@ with tab_operator:
         }
         acd_colors_dot = {"tablet": "#3b82f6", "comic": "#8b5cf6", "other": "#f59e0b", "転送": "#6366f1"}
 
-        header = "<tr><th>オペレーター</th><th>所属ACD</th><th>通話回数</th><th>1日平均</th><th>通話時間合計</th><th>平均通話時間</th><th>後処理時間合計</th><th>平均後処理時間</th><th>休憩合計</th><th>休憩平均</th></tr>"
+        header = "<tr><th>オペレーター</th><th>所属ACD</th><th>通話回数</th><th>1日平均</th><th>通話時間合計</th><th>平均通話時間</th><th>後処理時間合計</th><th>平均後処理時間</th><th>休憩時間合計</th><th>休憩時間平均</th></tr>"
         rows = ""
         for agent in agents:
             acd_name = agent_acd_map.get(agent["name"], agent["name"])
