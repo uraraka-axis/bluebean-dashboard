@@ -9,8 +9,10 @@ import csv
 import io
 import json
 import os
-from datetime import datetime, date
+from datetime import datetime, date, timezone, timedelta
 from calendar import monthrange
+
+JST = timezone(timedelta(hours=9))
 
 # --- 定数 ---
 TRANSFER_PHONE_WEEKDAY = '8075810552'  # 平日転送先（携帯）
@@ -293,7 +295,7 @@ def build_dashboard(cur_files, prev_files, cur_year, cur_month, prev_year, prev_
     cur_files / prev_files: dict with keys 'acd_summary', 'acd_report', 'cdr', 'agent_report'
         各値は read_csv_bytes() の結果（list[dict]）または None
     """
-    now = datetime.now()
+    now = datetime.now(JST)
     ym = f"{cur_year}-{cur_month:02d}"
     prev_ym = f"{prev_year}-{prev_month:02d}"
 
