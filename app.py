@@ -15,6 +15,39 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# --- パスワード認証 ---
+def check_password():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if st.session_state.authenticated:
+        return True
+
+    st.markdown("""
+    <div style="display:flex;justify-content:center;align-items:center;min-height:60vh">
+        <div style="background:white;padding:40px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);width:360px;text-align:center">
+            <h2 style="margin-bottom:8px">BlueBeanダッシュボード</h2>
+            <p style="color:#6b7280;font-size:14px">パスワードを入力してください</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    with st.container():
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            password = st.text_input("パスワード", type="password", key="password_input")
+            if st.button("ログイン", use_container_width=True):
+                if password == st.secrets["auth"]["password"]:
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("パスワードが正しくありません")
+    return False
+
+
+if not check_password():
+    st.stop()
+
 # --- カスタムCSS ---
 st.markdown("""
 <style>
