@@ -462,11 +462,12 @@ with tab_operator:
         horizontal=True, key="agent_month", label_visibility="collapsed"
     )
     agent_key = "current" if "今月" in agent_month_sel else "prev"
+    agent_month_label = cur_month["label"] if agent_key == "current" else prev_month["label"]
     agents = data["agents"][agent_key]
     acd_transfer_agent = data["acdTransfer"][agent_key]
 
     # オペレーター別テーブル
-    st.markdown('<div class="section-title">オペレーター別 実績</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-title">オペレーター別 実績（{agent_month_label}）</div>', unsafe_allow_html=True)
 
     if agents:
         # オペレーター→ACD名マッピング
@@ -477,19 +478,17 @@ with tab_operator:
         }
         acd_colors_dot = {"tablet": "#3b82f6", "comic": "#8b5cf6", "other": "#f59e0b", "転送": "#6366f1"}
 
-        header = "<tr><th>オペレーター</th><th>所属ACD</th><th>通話回数</th><th>1日平均</th><th>受付回数</th><th>通話時間合計</th><th>平均通話時間</th><th>後処理時間合計</th><th>平均後処理時間</th><th>稼働率</th></tr>"
+        header = "<tr><th>オペレーター</th><th>所属ACD</th><th>通話回数</th><th>1日平均</th><th>受付回数</th><th>通話時間合計</th><th>平均通話時間</th><th>後処理時間合計</th><th>平均後処理時間</th></tr>"
         rows = ""
         for agent in agents:
             acd_name = agent_acd_map.get(agent["name"], agent["name"])
             color = acd_colors_dot.get(acd_name, "#6b7280")
-            util_color = "#dc2626" if agent["utilization"] < 50 else "#059669"
             rows += f"""<tr>
                 <td><strong>{agent['name']}</strong></td>
                 <td><span style="color:{color}">●</span> {acd_name}</td>
                 <td>{agent['talkCount']}</td><td>{agent['dailyAvg']}</td><td>{agent['acceptCount']}</td>
                 <td>{agent['talkTimeTotal']}</td><td>{agent['avgTalkTime']}</td>
                 <td>{agent['afterWorkTotal']}</td><td>{agent['avgAfterWork']}</td>
-                <td style="color:{util_color}">{agent['utilization']}%</td>
             </tr>"""
 
         # 転送行
@@ -498,7 +497,7 @@ with tab_operator:
             <td><span style="color:#6366f1">●</span> 転送</td>
             <td style="color:#6366f1">{acd_transfer_agent['total']}</td>
             <td style="color:#6366f1">{acd_transfer_agent['dailyAvg']}</td>
-            <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+            <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
         </tr>"""
 
         st.markdown(f'<table class="styled-table">{header}{rows}</table>', unsafe_allow_html=True)
@@ -509,13 +508,8 @@ with tab_operator:
     st.markdown("")
 
     # 曜日別平均
-    st.markdown('<div class="section-title">曜日別 平均通話回数</div>', unsafe_allow_html=True)
-    dow_agent_month_sel = st.radio(
-        "月選択", [f'今月（{cur_month["label"]}）', f'先月（{prev_month["label"]}）'],
-        horizontal=True, key="dow_agent_month", label_visibility="collapsed"
-    )
-    dow_agent_key = "current" if "今月" in dow_agent_month_sel else "prev"
-    dow_agent = data["dowAverage"][dow_agent_key]
+    st.markdown(f'<div class="section-title">曜日別 平均通話回数（{agent_month_label}）</div>', unsafe_allow_html=True)
+    dow_agent = data["dowAverage"][agent_key]
 
     dow_order = ["月", "火", "水", "木", "金", "土", "日"]
     header = "<tr><th>全体</th>" + "".join(f"<th>{format_dow_name(d)}</th>" for d in dow_order) + "</tr>"
