@@ -1,0 +1,21 @@
+{
+  "name": "bluebean-dashboard",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "fetch": "node scripts/fetch-csv.js",
+    "process": "node scripts/process-csv.js",
+    "upload": "node scripts/upload.js",
+    "run": "node scripts/run-all.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "basic-ftp": "^5.2.0",
+    "csv-parse": "^6.2.1",
+    "iconv-lite": "^0.7.2",
+    "playwright": "^1.59.1"
+  }
+}
