@@ -163,16 +163,16 @@ async function fetchAcdSummaryCsvByMonth(page, year, month, savePath, label) {
   });
   await page.waitForTimeout(200);
 
-  // 2. 月ドロップダウンで対象月を選択（value形式: "YYYY-M" ※ゼロ埋めなし）
-  const monthValue = `${year}-${month}`;
-  await page.selectOption('#QueueCdrDateRange', monthValue);
-  await page.waitForTimeout(200);
-
-  // 3. 「集計期間」ラジオ（timeType=1 月選択側）をクリック
+  // 2. 「集計期間」ラジオ（timeType=1 月選択側）をクリック → ドロップダウンを有効化
   await page.evaluate(() => {
     const radio = document.querySelector('input[name="data[QueueCdr][timeType]"][value="1"]');
     if (radio) radio.click();
   });
+  await page.waitForTimeout(300);
+
+  // 3. 月ドロップダウンで対象月を選択（value形式: "YYYY-M" ※ゼロ埋めなし）
+  const monthValue = `${year}-${month}`;
+  await page.selectOption('#QueueCdrDateRange', monthValue);
   await page.waitForTimeout(200);
 
   await clickSearch(page);
