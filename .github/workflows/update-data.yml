@@ -1,10 +1,10 @@
 name: BlueBean データ更新
 
 on:
-  # schedule:
-  #   # 毎朝 8:00 JST = 23:00 UTC（前日）
-  #   - cron: '0 23 * * *'
-  workflow_dispatch: # 手動実行用のみ（自動実行は日付範囲の問題があるため停止中）
+  schedule:
+    # 毎朝 8:00 JST = 23:00 UTC（前日）
+    - cron: '0 23 * * *'
+  workflow_dispatch: # 手動実行も可能
 
 permissions:
   contents: write
@@ -40,13 +40,34 @@ jobs:
         run: node scripts/process-csv.js
 
       - name: 変更をコミット＆プッシュ
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
           if git diff --staged --quiet; then
             echo "変更なし。スキップ。"
+            echo "changed=false" >> $GITHUB_OUTPUT
           else
             git commit -m "data: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M') のデータ更新"
             git push
+            echo "changed=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Google Chat 通知（成功）
+        if: success()
+        run: |
+          curl -s -X POST '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' \
+            -H 'Content-Type: application/json; charset=UTF-8' \
+            -d '{
+              "text": "BlueBeanダッシュボードの更新が終わりました。\nhttps://bluebean-dashboard.streamlit.app/\nbbUraraka2026"
+            }'
+
+      - name: Google Chat 通知（失敗）
+        if: failure()
+        run: |
+          curl -s -X POST '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' \
+            -H 'Content-Type: application/json; charset=UTF-8' \
+            -d '{
+              "text": "BlueBeanダッシュボードの更新に失敗しました。\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }'
