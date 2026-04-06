@@ -122,8 +122,32 @@ async function main() {
     await page.goto(`${BB_URL}/admin/queue_cdrs/index/`);
     await page.waitForLoadState('networkidle');
 
+    // デバッグ: ページの日付フィールドとフォーム構造を確認
+    const debugInfo = await page.evaluate(() => {
+      const inputs = Array.from(document.querySelectorAll('input')).map(el => ({
+        name: el.name, id: el.id, type: el.type, value: el.value, placeholder: el.placeholder
+      }));
+      const forms = Array.from(document.querySelectorAll('form')).map(el => ({
+        action: el.action, method: el.method
+      }));
+      return { inputs, forms, url: location.href };
+    });
+    console.log('  デバッグ - ページ情報:', JSON.stringify(debugInfo, null, 2));
+
     // 日付範囲を設定（daterangepicker回避）
     await setDateRange(page, monthStart, todayStr);
+
+    // デバッグ: 日付設定後の値を確認
+    const dateValues = await page.evaluate(() => {
+      const inputs = Array.from(document.querySelectorAll('input')).filter(el =>
+        el.name.includes('date') || el.id.includes('date')
+      ).map(el => ({ name: el.name, value: el.value }));
+      return inputs;
+    });
+    console.log('  デバッグ - 日付設定後:', JSON.stringify(dateValues));
+
+    // スクリーンショット保存
+    await page.screenshot({ path: path.join(dataDir, `debug_acd_report.png`), fullPage: true });
 
     // 検索実行
     const searchBtn = page.locator('button:has-text("検索"), input[value="検索"], button:has-text("Search")');
