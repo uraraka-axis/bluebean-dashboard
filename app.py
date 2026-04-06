@@ -44,6 +44,10 @@ html, body, [class*="css"] {
     font-family: 'Inter', 'Noto Sans JP', sans-serif;
 }
 
+/* Streamlitデフォルト余白を詰める */
+.block-container { padding-top: 1rem !important; }
+header[data-testid="stHeader"] { display: none !important; }
+
 /* ヘッダー */
 .main-header {
     background: linear-gradient(135deg, #1e3a5f 0%, #1a56db 100%);
