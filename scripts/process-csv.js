@@ -24,9 +24,15 @@ const ACD_NAMES = { '8002': 'tablet', '8003': 'comic', '8004': 'other' };
 const DOW_NAMES = ['日', '月', '火', '水', '木', '金', '土'];
 
 function readCsvFile(filePath) {
-  if (!fs.existsSync(filePath)) return null;
+  if (!filePath || !fs.existsSync(filePath)) return null;
   const buf = fs.readFileSync(filePath);
   const text = iconv.decode(buf, 'Shift_JIS');
+  // デバッグ: ファイルサイズと先頭部分
+  console.log(`  readCsv: ${filePath} (${buf.length}bytes, 先頭: ${text.substring(0, 100).replace(/\n/g, '\\n')})`);
+  if (text.startsWith('<') || text.includes('<!DOCTYPE')) {
+    console.log(`  *** HTMLファイルを検出! CSVではありません ***`);
+    return null;
+  }
   return parse(text, { columns: true, skip_empty_lines: true, trim: true });
 }
 
@@ -260,6 +266,18 @@ function main() {
   console.log(`今月: ${ym} (${curDir})`);
   console.log(`先月: ${prevYm} (${prevDir})`);
 
+  // デバッグ: ディレクトリ内容
+  if (fs.existsSync(curDir)) {
+    console.log(`今月dir内容: ${fs.readdirSync(curDir).join(', ')}`);
+  } else {
+    console.log(`今月dir不在: ${curDir}`);
+  }
+  if (fs.existsSync(prevDir)) {
+    console.log(`先月dir内容: ${fs.readdirSync(prevDir).join(', ')}`);
+  } else {
+    console.log(`先月dir不在: ${prevDir}`);
+  }
+
   // CSVファイル読み込み
   const curAcdSummary = readCsvFile(findLatestCsv(curDir, 'acd_summary'));
   const curAcdReport = readCsvFile(findLatestCsv(curDir, 'acd_report'));
@@ -271,8 +289,43 @@ function main() {
   const prevCdr = readCsvFile(findLatestCsv(prevDir, 'cdr'));
   const prevAgentReport = readCsvFile(findLatestCsv(prevDir, 'agent_report'));
 
-  console.log(`今月CSV: summary=${!!curAcdSummary} acd=${!!curAcdReport} cdr=${!!curCdr} agent=${!!curAgentReport}`);
-  console.log(`先月CSV: summary=${!!prevAcdSummary} acd=${!!prevAcdReport} cdr=${!!prevCdr} agent=${!!prevAgentReport}`);
+  // デバッグ: ファイルパスとデータ件数
+  console.log(`今月CSV files:`);
+  console.log(`  summary: ${findLatestCsv(curDir, 'acd_summary')} → ${curAcdSummary ? curAcdSummary.length + '行' : 'null'}`);
+  console.log(`  acd:     ${findLatestCsv(curDir, 'acd_report')} → ${curAcdReport ? curAcdReport.length + '行' : 'null'}`);
+  console.log(`  cdr:     ${findLatestCsv(curDir, 'cdr')} → ${curCdr ? curCdr.length + '行' : 'null'}`);
+  console.log(`  agent:   ${findLatestCsv(curDir, 'agent_report')} → ${curAgentReport ? curAgentReport.length + '行' : 'null'}`);
+  console.log(`先月CSV files:`);
+  console.log(`  summary: ${findLatestCsv(prevDir, 'acd_summary')} → ${prevAcdSummary ? prevAcdSummary.length + '行' : 'null'}`);
+  console.log(`  acd:     ${findLatestCsv(prevDir, 'acd_report')} → ${prevAcdReport ? prevAcdReport.length + '行' : 'null'}`);
+  console.log(`  cdr:     ${findLatestCsv(prevDir, 'cdr')} → ${prevCdr ? prevCdr.length + '行' : 'null'}`);
+  console.log(`  agent:   ${findLatestCsv(prevDir, 'agent_report')} → ${prevAgentReport ? prevAgentReport.length + '行' : 'null'}`);
+
+  // デバッグ: acd_summaryの中身サンプル
+  if (curAcdSummary && curAcdSummary.length > 0) {
+    console.log(`今月summary列名: ${Object.keys(curAcdSummary[0]).join(', ')}`);
+    const nonZero = curAcdSummary.filter(r => {
+      const k = Object.keys(r).find(k => k.includes('ACD着信'));
+      return k && parseInt(r[k]) > 0;
+    });
+    console.log(`今月summary非ゼロ行: ${nonZero.length}/${curAcdSummary.length}`);
+  }
+
+  // デバッグ: CDRサンプル
+  if (curCdr && curCdr.length > 0) {
+    console.log(`今月CDR列名: ${Object.keys(curCdr[0]).join(', ')}`);
+    const dateCol = Object.keys(curCdr[0]).find(k => k.includes('発着信時間'));
+    if (dateCol) {
+      const months = [...new Set(curCdr.map(r => r[dateCol].substring(0,7)))];
+      console.log(`今月CDRの実際の月: ${months.join(', ')}`);
+    }
+    // 転送候補のデバッグ
+    const typeCol = Object.keys(curCdr[0]).find(k => k.includes('種類'));
+    const opCol = Object.keys(curCdr[0]).find(k => k.includes('オペレータ'));
+    const destCol = Object.keys(curCdr[0]).find(k => k.includes('着信先'));
+    const pvRows = curCdr.filter(r => typeCol && r[typeCol].includes('PV発信'));
+    console.log(`PV発信行: ${pvRows.length}, typeCol=${typeCol}, opCol=${opCol}, destCol=${destCol}`);
+  }
 
   // 転送データ抽出
   const curTransfers = extractTransfers(curCdr);
