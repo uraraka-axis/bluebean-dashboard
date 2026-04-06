@@ -371,6 +371,7 @@ with tab_acd:
     acd_month_label = cur_month["label"] if acd_key == "current" else prev_month["label"]
     acd_list = data["acd"][acd_key]
     acd_transfer = data["acdTransfer"][acd_key]
+    sat_transfer = data.get("saturdayTransfer", {}).get(acd_key, {"total": 0, "dailyAvg": 0, "rate": 0})
     bb_summary = data["bbSummary"][acd_key]
     active_days = bb_summary.get("activeDays", 1) or 1
 
@@ -425,17 +426,31 @@ with tab_acd:
                 <td>{acd['avgTalkTime']}</td>
             </tr>"""
 
-        # 転送行
+        # 転送行（平日）
         transfer_rate_html = rate_bar_html(acd_transfer["rate"]) if acd_transfer["total"] > 0 else "-%"
         transfer_abandon = acd_transfer["total"] - int(acd_transfer["total"] * acd_transfer["rate"] / 100) if acd_transfer["total"] > 0 else 0
         transfer_abandon_rate = round((1 - acd_transfer["rate"] / 100) * 100, 1) if acd_transfer["total"] > 0 else 0
         rows += f"""<tr>
-            <td style="color:#6366f1">転送（携帯）</td>
+            <td style="color:#6366f1">転送（平日）</td>
             <td style="color:#6366f1">{acd_transfer['total']}</td>
             <td style="color:#6366f1">{acd_transfer['dailyAvg']}</td>
             <td>{int(acd_transfer['total'] * acd_transfer['rate'] / 100) if acd_transfer['total'] > 0 else 0}</td>
             <td>{transfer_rate_html}</td>
             <td>{transfer_abandon}</td><td>{abandon_badge(transfer_abandon_rate) if acd_transfer['total'] > 0 else '-'}</td>
+            <td>-</td>
+        </tr>"""
+
+        # 転送行（土曜）
+        sat_rate_html = rate_bar_html(sat_transfer["rate"]) if sat_transfer["total"] > 0 else "-%"
+        sat_abandon = sat_transfer["total"] - int(sat_transfer["total"] * sat_transfer["rate"] / 100) if sat_transfer["total"] > 0 else 0
+        sat_abandon_rate = round((1 - sat_transfer["rate"] / 100) * 100, 1) if sat_transfer["total"] > 0 else 0
+        rows += f"""<tr>
+            <td style="color:#059669">転送（土曜）</td>
+            <td style="color:#059669">{sat_transfer['total']}</td>
+            <td style="color:#059669">{sat_transfer['dailyAvg']}</td>
+            <td>{int(sat_transfer['total'] * sat_transfer['rate'] / 100) if sat_transfer['total'] > 0 else 0}</td>
+            <td>{sat_rate_html}</td>
+            <td>{sat_abandon}</td><td>{abandon_badge(sat_abandon_rate) if sat_transfer['total'] > 0 else '-'}</td>
             <td>-</td>
         </tr>"""
 
@@ -491,9 +506,9 @@ with tab_operator:
                 <td>{agent['afterWorkTotal']}</td><td>{agent['avgAfterWork']}</td>
             </tr>"""
 
-        # 転送行
+        # 転送行（平日）
         rows += f"""<tr>
-            <td style="color:#6366f1">携帯転送</td>
+            <td style="color:#6366f1">転送（平日）</td>
             <td><span style="color:#6366f1">●</span> 転送</td>
             <td style="color:#6366f1">{acd_transfer_agent['total']}</td>
             <td style="color:#6366f1">{acd_transfer_agent['dailyAvg']}</td>
@@ -501,7 +516,7 @@ with tab_operator:
         </tr>"""
 
         st.markdown(f'<table class="styled-table">{header}{rows}</table>', unsafe_allow_html=True)
-        st.caption("※ 携帯転送分はBlueBeanオペレーター外のため、通話時間等の詳細はCDRに記録なし。件数のみ集計。")
+        st.caption("※ 転送分はBlueBeanオペレーター外のため、通話時間等の詳細はCDRに記録なし。件数のみ集計。")
     else:
         st.info("データがありません。")
 
@@ -607,7 +622,7 @@ with tab_import:
             existing = load_data() or {}
 
             if not any(cur_csv.values()) and existing:
-                for key in ['bbSummary', 'transferSummary', 'acdTransfer']:
+                for key in ['bbSummary', 'transferSummary', 'acdTransfer', 'saturdayTransfer']:
                     if key in existing:
                         result[key]['current'] = existing[key]['current']
                 for key in ['daily', 'acd', 'agents', 'dowAverage']:
@@ -617,7 +632,7 @@ with tab_import:
                     result['yesterday'] = existing['yesterday']
 
             if not any(prev_csv.values()) and existing:
-                for key in ['bbSummary', 'transferSummary', 'acdTransfer']:
+                for key in ['bbSummary', 'transferSummary', 'acdTransfer', 'saturdayTransfer']:
                     if key in existing:
                         result[key]['prev'] = existing[key]['prev']
                 for key in ['daily', 'acd', 'agents', 'dowAverage']:

@@ -13,7 +13,7 @@ from datetime import datetime, date
 from calendar import monthrange
 
 # --- 定数 ---
-TRANSFER_PHONES = ['08075810552', '0463746531', '08035369556', '08032059925']
+TRANSFER_PHONE_WEEKDAY = '8075810552'  # 平日転送先（携帯）
 ACD_NAMES = {'8002': 'tablet', '8003': 'comic', '8004': 'other'}
 DOW_NAMES = ['月', '火', '水', '木', '金', '土', '日']  # Python: 0=月曜
 
@@ -86,29 +86,58 @@ def rate_class(rate):
     return 'bad'
 
 
-def extract_transfers(cdr_rows):
-    """CDRから転送データを抽出"""
+def _parse_transfer_record(row):
+    """CDR行から転送レコードを生成（共通処理）"""
+    dt_str = get_col(row, '発着信時間') or ''
+    status = get_col(row, '状態') or ''
+    talk_time = get_col(row, '通話時間') or '0'
+    try:
+        talk_int = int(talk_time)
+    except ValueError:
+        talk_int = time_to_sec(talk_time)
+
+    # 曜日判定
+    dow = None
+    if len(dt_str) >= 10:
+        try:
+            dt = date(int(dt_str[:4]), int(dt_str[5:7]), int(dt_str[8:10]))
+            dow = dt.weekday()  # 0=月
+        except (ValueError, IndexError):
+            pass
+
+    return {
+        'datetime': dt_str,
+        'date': dt_str[:10],
+        'hour': int(dt_str[11:13]) if len(dt_str) >= 13 else 0,
+        'answered': status == '完了' or (talk_int > 0 and status != 'キャンセル'),
+        'dow': dow,
+    }
+
+
+def extract_transfers_weekday(cdr_rows):
+    """平日転送: PV発信 + 着信先に携帯番号を含む"""
     if not cdr_rows:
         return []
     results = []
     for row in cdr_rows:
         type_val = get_col(row, '種類') or ''
-        operator = get_col(row, 'オペレータ') or ''
         dest = get_col(row, '着信先') or ''
-        if 'PV発信' in type_val and operator == '-' and any(p in dest for p in TRANSFER_PHONES):
-            dt_str = get_col(row, '発着信時間') or ''
-            status = get_col(row, '状態') or ''
-            talk_time = get_col(row, '通話時間') or '0'
-            try:
-                talk_int = int(talk_time)
-            except ValueError:
-                talk_int = time_to_sec(talk_time)
-            results.append({
-                'datetime': dt_str,
-                'date': dt_str[:10],
-                'hour': int(dt_str[11:13]) if len(dt_str) >= 13 else 0,
-                'answered': status == '完了' or (talk_int > 0 and status != 'キャンセル'),
-            })
+        if 'PV発信' in type_val and TRANSFER_PHONE_WEEKDAY in dest:
+            results.append(_parse_transfer_record(row))
+    return results
+
+
+def extract_transfers_saturday(cdr_rows):
+    """土曜転送: PV発信 + 発着信時間が土曜日"""
+    if not cdr_rows:
+        return []
+    results = []
+    for row in cdr_rows:
+        type_val = get_col(row, '種類') or ''
+        if 'PV発信' in type_val:
+            rec = _parse_transfer_record(row)
+            if rec['dow'] == 5:  # 5=土曜
+                results.append(rec)
     return results
 
 
@@ -272,9 +301,11 @@ def build_dashboard(cur_files, prev_files, cur_year, cur_month, prev_year, prev_
     ym = f"{cur_year}-{cur_month:02d}"
     prev_ym = f"{prev_year}-{prev_month:02d}"
 
-    # 転送データ抽出
-    cur_transfers = extract_transfers(cur_files.get('cdr'))
-    prev_transfers = extract_transfers(prev_files.get('cdr'))
+    # 転送データ抽出（平日・土曜別）
+    cur_transfers = extract_transfers_weekday(cur_files.get('cdr'))
+    prev_transfers = extract_transfers_weekday(prev_files.get('cdr'))
+    cur_transfers_sat = extract_transfers_saturday(cur_files.get('cdr'))
+    prev_transfers_sat = extract_transfers_saturday(prev_files.get('cdr'))
 
     # 日別集計
     cur_daily = process_daily_summary(cur_files.get('acd_summary'), cur_transfers, cur_year, cur_month)
@@ -301,6 +332,18 @@ def build_dashboard(cur_files, prev_files, cur_year, cur_month, prev_year, prev_
 
     cur_summary = calc_summary(cur_daily, cur_transfers)
     prev_summary = calc_summary(prev_daily, prev_transfers)
+
+    # 土曜転送サマリー
+    def calc_transfer_summary(transfers):
+        total = len(transfers)
+        days = len(set(t['date'] for t in transfers))
+        avg = round(total / days, 1) if days > 0 else 0
+        answered = len([t for t in transfers if t['answered']])
+        rate = round(answered / total * 100, 1) if total > 0 else 0
+        return {'total': total, 'dailyAvg': avg, 'rate': rate}
+
+    cur_sat_summary = calc_transfer_summary(cur_transfers_sat)
+    prev_sat_summary = calc_transfer_summary(prev_transfers_sat)
 
     # 昨日データ
     yesterday_data = None
@@ -351,6 +394,10 @@ def build_dashboard(cur_files, prev_files, cur_year, cur_month, prev_year, prev_
         'acdTransfer': {
             'current': cur_summary['transfer'],
             'prev': prev_summary['transfer'],
+        },
+        'saturdayTransfer': {
+            'current': cur_sat_summary,
+            'prev': prev_sat_summary,
         },
         'dowAverage': {'current': cur_dow, 'prev': prev_dow},
         'agents': {'current': cur_agents, 'prev': prev_agents},
