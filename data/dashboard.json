@@ -1,5 +1,5 @@
 {
-  "generated": "2026-05-04T02:49:53.311Z",
+  "generated": "2026-05-05T02:42:27.436Z",
   "currentMonth": {
     "year": 2026,
     "month": 5,
@@ -13,10 +13,10 @@
     "label": "4月"
   },
   "yesterday": {
-    "date": "2026-05-03",
-    "day": 3,
-    "dow": 0,
-    "dowName": "日",
+    "date": "2026-05-04",
+    "day": 4,
+    "dow": 1,
+    "dowName": "月",
     "calls": 0,
     "answered": 0,
     "rate": 0,
