@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-01T04:00:58.413Z",
+  "generated": "2026-06-02T03:56:38.105Z",
   "currentMonth": {
     "year": 2026,
     "month": 6,
@@ -12,13 +12,26 @@
     "ym": "2026-05",
     "label": "5月"
   },
-  "yesterday": null,
+  "yesterday": {
+    "date": "2026-06-01",
+    "day": 1,
+    "dow": 1,
+    "dowName": "月",
+    "calls": 24,
+    "answered": 12,
+    "rate": 50,
+    "rateClass": "bad",
+    "abandoned": 11,
+    "abandonRate": 45.8,
+    "overflow": 1,
+    "transferCount": 3
+  },
   "bbSummary": {
     "current": {
-      "total": 0,
-      "dailyAvg": 0,
-      "rate": 0,
-      "activeDays": 0
+      "total": 24,
+      "dailyAvg": 24,
+      "rate": 50,
+      "activeDays": 1
     },
     "prev": {
       "total": 334,
@@ -29,9 +42,9 @@
   },
   "transferSummary": {
     "current": {
-      "total": 0,
-      "dailyAvg": 0,
-      "rate": 0
+      "total": 3,
+      "dailyAvg": 3,
+      "rate": 100
     },
     "prev": {
       "total": 32,
@@ -40,7 +53,428 @@
     }
   },
   "daily": {
-    "current": [],
+    "current": [
+      {
+        "date": "2026-06-30",
+        "day": 30,
+        "dow": 2,
+        "dowName": "火",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-29",
+        "day": 29,
+        "dow": 1,
+        "dowName": "月",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-28",
+        "day": 28,
+        "dow": 0,
+        "dowName": "日",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-27",
+        "day": 27,
+        "dow": 6,
+        "dowName": "土",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-26",
+        "day": 26,
+        "dow": 5,
+        "dowName": "金",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-25",
+        "day": 25,
+        "dow": 4,
+        "dowName": "木",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-24",
+        "day": 24,
+        "dow": 3,
+        "dowName": "水",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-23",
+        "day": 23,
+        "dow": 2,
+        "dowName": "火",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-22",
+        "day": 22,
+        "dow": 1,
+        "dowName": "月",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-21",
+        "day": 21,
+        "dow": 0,
+        "dowName": "日",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-20",
+        "day": 20,
+        "dow": 6,
+        "dowName": "土",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-19",
+        "day": 19,
+        "dow": 5,
+        "dowName": "金",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-18",
+        "day": 18,
+        "dow": 4,
+        "dowName": "木",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-17",
+        "day": 17,
+        "dow": 3,
+        "dowName": "水",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-16",
+        "day": 16,
+        "dow": 2,
+        "dowName": "火",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-15",
+        "day": 15,
+        "dow": 1,
+        "dowName": "月",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-14",
+        "day": 14,
+        "dow": 0,
+        "dowName": "日",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-13",
+        "day": 13,
+        "dow": 6,
+        "dowName": "土",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-12",
+        "day": 12,
+        "dow": 5,
+        "dowName": "金",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-11",
+        "day": 11,
+        "dow": 4,
+        "dowName": "木",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-10",
+        "day": 10,
+        "dow": 3,
+        "dowName": "水",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-09",
+        "day": 9,
+        "dow": 2,
+        "dowName": "火",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-08",
+        "day": 8,
+        "dow": 1,
+        "dowName": "月",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-07",
+        "day": 7,
+        "dow": 0,
+        "dowName": "日",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-06",
+        "day": 6,
+        "dow": 6,
+        "dowName": "土",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-05",
+        "day": 5,
+        "dow": 5,
+        "dowName": "金",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-04",
+        "day": 4,
+        "dow": 4,
+        "dowName": "木",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-03",
+        "day": 3,
+        "dow": 3,
+        "dowName": "水",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-02",
+        "day": 2,
+        "dow": 2,
+        "dowName": "火",
+        "calls": 0,
+        "answered": 0,
+        "rate": 0,
+        "rateClass": "",
+        "abandoned": 0,
+        "abandonRate": 0,
+        "overflow": 0,
+        "transferCount": 0
+      },
+      {
+        "date": "2026-06-01",
+        "day": 1,
+        "dow": 1,
+        "dowName": "月",
+        "calls": 24,
+        "answered": 12,
+        "rate": 50,
+        "rateClass": "bad",
+        "abandoned": 11,
+        "abandonRate": 45.8,
+        "overflow": 1,
+        "transferCount": 3
+      }
+    ],
     "prev": [
       {
         "date": "2026-05-31",
@@ -479,7 +913,50 @@
     ]
   },
   "acd": {
-    "current": [],
+    "current": [
+      {
+        "groupId": "8002",
+        "name": "tablet",
+        "calls": 5,
+        "answered": 3,
+        "rate": 60,
+        "rateClass": "bad",
+        "abandoned": 1,
+        "abandonRate": 20,
+        "overflow": 1,
+        "avgTalkTime": "00:02:42",
+        "avgWaitTime": "00:00:11",
+        "dailyAvg": 5
+      },
+      {
+        "groupId": "8003",
+        "name": "comic",
+        "calls": 12,
+        "answered": 7,
+        "rate": 58.3,
+        "rateClass": "bad",
+        "abandoned": 5,
+        "abandonRate": 41.7,
+        "overflow": 0,
+        "avgTalkTime": "00:02:18",
+        "avgWaitTime": "00:00:12",
+        "dailyAvg": 12
+      },
+      {
+        "groupId": "8004",
+        "name": "other",
+        "calls": 7,
+        "answered": 2,
+        "rate": 28.6,
+        "rateClass": "bad",
+        "abandoned": 5,
+        "abandonRate": 71.4,
+        "overflow": 0,
+        "avgTalkTime": "00:03:55",
+        "avgWaitTime": "00:00:08",
+        "dailyAvg": 7
+      }
+    ],
     "prev": [
       {
         "groupId": "8002",
@@ -527,9 +1004,9 @@
   },
   "acdTransfer": {
     "current": {
-      "total": 0,
-      "dailyAvg": 0,
-      "rate": 0
+      "total": 3,
+      "dailyAvg": 3,
+      "rate": 100
     },
     "prev": {
       "total": 32,
@@ -540,7 +1017,7 @@
   "dowAverage": {
     "current": {
       "日": null,
-      "月": null,
+      "月": 24,
       "火": null,
       "水": null,
       "木": null,
@@ -558,7 +1035,56 @@
     }
   },
   "agents": {
-    "current": [],
+    "current": [
+      {
+        "loginId": "tablet1",
+        "name": "tablet1",
+        "talkCount": 2,
+        "acceptCount": 8,
+        "talkTimeTotal": "00:07:19",
+        "avgTalkTime": "3:40",
+        "afterWorkTotal": "00:51:12",
+        "avgAfterWork": "6:24",
+        "utilization": 0,
+        "dailyAvg": 2
+      },
+      {
+        "loginId": "tablet2",
+        "name": "tablet2",
+        "talkCount": 2,
+        "acceptCount": 4,
+        "talkTimeTotal": "00:03:47",
+        "avgTalkTime": "1:54",
+        "afterWorkTotal": "00:01:59",
+        "avgAfterWork": "0:30",
+        "utilization": 0,
+        "dailyAvg": 2
+      },
+      {
+        "loginId": "comic2",
+        "name": "comic2",
+        "talkCount": 11,
+        "acceptCount": 20,
+        "talkTimeTotal": "00:28:17",
+        "avgTalkTime": "2:34",
+        "afterWorkTotal": "00:22:28",
+        "avgAfterWork": "1:07",
+        "utilization": 0,
+        "dailyAvg": 11
+      },
+      {
+        "loginId": "other",
+        "name": "other",
+        "talkCount": 2,
+        "acceptCount": 6,
+        "talkTimeTotal": "00:07:49",
+        "avgTalkTime": "3:55",
+        "afterWorkTotal": "01:35:28",
+        "avgAfterWork": "15:55",
+        "utilization": 0,
+        "dailyAvg": 2
+      }
+    ],
     "prev": [
       {
         "loginId": "tablet1",
