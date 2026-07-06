@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-05T03:21:07.508Z",
+  "generated": "2026-07-06T03:29:09.305Z",
   "currentMonth": {
     "year": 2026,
     "month": 7,
@@ -13,16 +13,16 @@
     "label": "6月"
   },
   "yesterday": {
-    "date": "2026-07-04",
-    "day": 4,
-    "dow": 6,
-    "dowName": "土",
-    "calls": 5,
-    "answered": 1,
-    "rate": 20,
-    "rateClass": "bad",
-    "abandoned": 4,
-    "abandonRate": 80,
+    "date": "2026-07-05",
+    "day": 5,
+    "dow": 0,
+    "dowName": "日",
+    "calls": 0,
+    "answered": 0,
+    "rate": 0,
+    "rateClass": "",
+    "abandoned": 0,
+    "abandonRate": 0,
     "overflow": 0,
     "transferCount": 0
   },
