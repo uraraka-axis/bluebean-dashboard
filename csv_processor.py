@@ -15,7 +15,9 @@ from calendar import monthrange
 JST = timezone(timedelta(hours=9))
 
 # --- 定数 ---
-TRANSFER_PHONE_WEEKDAY = '8075810552'  # 平日転送先（携帯）
+# 転送レコードの判定: 種類=PV発信 かつ オペレータ='-'（システム自動転送）
+# ※転送先の携帯番号は複数番号のローテーションのため番号では判定しない
+#   平日転送 = 月〜金の17:00〜19:00 / 土曜転送 = 土曜終日
 ACD_NAMES = {'8002': 'tablet', '8003': 'comic', '8004': 'other'}
 DOW_NAMES = ['月', '火', '水', '木', '金', '土', '日']  # Python: 0=月曜
 
@@ -116,33 +118,30 @@ def _parse_transfer_record(row):
     }
 
 
-def extract_transfers_weekday(cdr_rows):
-    """平日転送: PV発信 + 着信先に携帯番号を含む"""
+def _extract_auto_transfers(cdr_rows):
+    """自動転送レコード: 種類=PV発信 かつ オペレータ='-'"""
     if not cdr_rows:
         return []
     results = []
     for row in cdr_rows:
         type_val = get_col(row, '種類') or ''
-        dest = get_col(row, '着信先') or ''
-        if 'PV発信' in type_val and TRANSFER_PHONE_WEEKDAY in dest:
-            rec = _parse_transfer_record(row)
-            if 17 <= rec['hour'] < 19:
-                results.append(rec)
+        operator = get_col(row, 'オペレータ') or ''
+        if 'PV発信' in type_val and operator == '-':
+            results.append(_parse_transfer_record(row))
     return results
+
+
+def extract_transfers_weekday(cdr_rows):
+    """平日転送: 自動転送のうち月〜金の17:00〜19:00"""
+    return [
+        rec for rec in _extract_auto_transfers(cdr_rows)
+        if rec['dow'] is not None and rec['dow'] <= 4 and 17 <= rec['hour'] < 19
+    ]
 
 
 def extract_transfers_saturday(cdr_rows):
-    """土曜転送: PV発信 + 発着信時間が土曜日"""
-    if not cdr_rows:
-        return []
-    results = []
-    for row in cdr_rows:
-        type_val = get_col(row, '種類') or ''
-        if 'PV発信' in type_val:
-            rec = _parse_transfer_record(row)
-            if rec['dow'] == 5:  # 5=土曜
-                results.append(rec)
-    return results
+    """土曜転送: 自動転送のうち土曜終日"""
+    return [rec for rec in _extract_auto_transfers(cdr_rows) if rec['dow'] == 5]
 
 
 def process_daily_summary(summary_rows, transfers, year, month):
@@ -307,9 +306,9 @@ def build_dashboard(cur_files, prev_files, cur_year, cur_month, prev_year, prev_
     cur_transfers_sat = extract_transfers_saturday(cur_files.get('cdr'))
     prev_transfers_sat = extract_transfers_saturday(prev_files.get('cdr'))
 
-    # 日別集計
-    cur_daily = process_daily_summary(cur_files.get('acd_summary'), cur_transfers, cur_year, cur_month)
-    prev_daily = process_daily_summary(prev_files.get('acd_summary'), prev_transfers, prev_year, prev_month)
+    # 日別集計（転送列には平日分＋土曜分の両方を表示）
+    cur_daily = process_daily_summary(cur_files.get('acd_summary'), cur_transfers + cur_transfers_sat, cur_year, cur_month)
+    prev_daily = process_daily_summary(prev_files.get('acd_summary'), prev_transfers + prev_transfers_sat, prev_year, prev_month)
 
     # 集計値計算ヘルパー
     def calc_summary(daily, transfers):

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-13T02:42:58.535Z",
+  "generated": "2026-07-13T09:56:40.247Z",
   "currentMonth": {
     "year": 2026,
     "month": 7,
@@ -42,14 +42,14 @@
   },
   "transferSummary": {
     "current": {
-      "total": 0,
-      "dailyAvg": 0,
-      "rate": 0
+      "total": 13,
+      "dailyAvg": 1.9,
+      "rate": 92.3
     },
     "prev": {
-      "total": 29,
+      "total": 38,
       "dailyAvg": 2.2,
-      "rate": 96.6
+      "rate": 97.4
     }
   },
   "daily": {
@@ -360,7 +360,7 @@
         "abandoned": 2,
         "abandonRate": 13.3,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-07-09",
@@ -374,7 +374,7 @@
         "abandoned": 2,
         "abandonRate": 13.3,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 3
       },
       {
         "date": "2026-07-08",
@@ -388,7 +388,7 @@
         "abandoned": 2,
         "abandonRate": 8.7,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-07-07",
@@ -402,7 +402,7 @@
         "abandoned": 2,
         "abandonRate": 13.3,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-07-06",
@@ -416,7 +416,7 @@
         "abandoned": 4,
         "abandonRate": 16.7,
         "overflow": 1,
-        "transferCount": 0
+        "transferCount": 5
       },
       {
         "date": "2026-07-05",
@@ -458,7 +458,7 @@
         "abandoned": 2,
         "abandonRate": 8.7,
         "overflow": 1,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-07-02",
@@ -486,7 +486,7 @@
         "abandoned": 3,
         "abandonRate": 14.3,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       }
     ],
     "prev": [
@@ -502,7 +502,7 @@
         "abandoned": 4,
         "abandonRate": 23.5,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 4
       },
       {
         "date": "2026-06-29",
@@ -516,7 +516,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-06-28",
@@ -544,7 +544,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 18
       },
       {
         "date": "2026-06-26",
@@ -600,7 +600,7 @@
         "abandoned": 7,
         "abandonRate": 30.4,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 3
       },
       {
         "date": "2026-06-22",
@@ -642,7 +642,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 9
       },
       {
         "date": "2026-06-19",
@@ -866,7 +866,7 @@
         "abandoned": 2,
         "abandonRate": 18.2,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-06-03",
@@ -1004,14 +1004,26 @@
   },
   "acdTransfer": {
     "current": {
+      "total": 13,
+      "dailyAvg": 1.9,
+      "rate": 92.3
+    },
+    "prev": {
+      "total": 38,
+      "dailyAvg": 2.2,
+      "rate": 97.4
+    }
+  },
+  "saturdayTransfer": {
+    "current": {
       "total": 0,
       "dailyAvg": 0,
       "rate": 0
     },
     "prev": {
-      "total": 29,
-      "dailyAvg": 2.2,
-      "rate": 96.6
+      "total": 27,
+      "dailyAvg": 13.5,
+      "rate": 100
     }
   },
   "dowAverage": {

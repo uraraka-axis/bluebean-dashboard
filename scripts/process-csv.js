@@ -12,8 +12,9 @@ const path = require('path');
 const iconv = require('iconv-lite');
 const { parse } = require('csv-parse/sync');
 
-// --- 転送先電話番号（携帯転送） ---
-const TRANSFER_PHONE = '08075810552';
+// 転送レコードの判定: 種類=PV発信 かつ オペレータ='-'（システム自動転送）
+// ※転送先の携帯番号は複数番号のローテーションのため番号では判定しない
+//   平日転送 = 月〜金の17:00〜19:00 / 土曜転送 = 土曜終日
 
 // --- ACD グループ名マッピング ---
 const ACD_NAMES = { '8002': 'tablet', '8003': 'comic', '8004': 'other' };
@@ -89,25 +90,55 @@ function rateClass(rate) {
   return 'bad';
 }
 
-// --- CDRから転送データを抽出 ---
+// --- CDRから転送データを抽出（自動転送 = PV発信 + オペレータ'-'） ---
 function extractTransfers(cdrRows) {
   if (!cdrRows) return [];
   return cdrRows.filter(row => {
     const type = getCol(row, '種類') || '';
     const operator = getCol(row, 'オペレータ') || '';
-    const dest = getCol(row, '着信先') || '';
-    return type.includes('PV発信') && operator === '-' && dest.includes(TRANSFER_PHONE);
+    return type.includes('PV発信') && operator === '-';
   }).map(row => {
     const datetime = getCol(row, '発着信時間') || '';
     const status = getCol(row, '状態') || '';
     const talkTime = getCol(row, '通話時間') || '0';
+    // 曜日（0=日〜6=土）。日付が読めない行は-1
+    let dow = -1;
+    if (datetime.length >= 10) {
+      const d = new Date(
+        parseInt(datetime.substring(0, 4)),
+        parseInt(datetime.substring(5, 7)) - 1,
+        parseInt(datetime.substring(8, 10))
+      );
+      if (!isNaN(d.getTime())) dow = d.getDay();
+    }
     return {
       datetime,
       date: datetime.substring(0, 10),
       hour: parseInt(datetime.substring(11, 13)) || 0,
+      dow,
       answered: status === '完了' || (parseInt(talkTime) > 0 && status !== 'キャンセル'),
     };
   });
+}
+
+// 平日転送（月〜金 17:00〜19:00）
+function filterWeekdayTransfers(transfers) {
+  return transfers.filter(t => t.dow >= 1 && t.dow <= 5 && t.hour >= 17 && t.hour < 19);
+}
+
+// 土曜転送（土曜終日）
+function filterSaturdayTransfers(transfers) {
+  return transfers.filter(t => t.dow === 6);
+}
+
+// 転送サマリー（合計・1日平均・応答率）
+function calcTransferSummary(transfers) {
+  const total = transfers.length;
+  const days = new Set(transfers.map(t => t.date)).size;
+  const dailyAvg = days > 0 ? Math.round((total / days) * 10) / 10 : 0;
+  const answered = transfers.filter(t => t.answered).length;
+  const rate = total > 0 ? Math.round((answered / total) * 1000) / 10 : 0;
+  return { total, dailyAvg, rate };
 }
 
 // --- 日別集計 ---
@@ -132,8 +163,8 @@ function processDailySummary(summaryRows, transfers, year, month) {
     const overflow = row ? parseInt(getCol(row, '溢れ') || '0') : 0;
     const rate = calls > 0 ? Math.round((answered / calls) * 1000) / 10 : 0;
 
-    // 転送件数（その日の分）
-    const dayTransfers = transfers.filter(t => t.date === dateStr && t.hour >= 17 && t.hour < 19);
+    // 転送件数（その日の分。平日17-19時分＋土曜終日分を渡す前提で日付一致のみ）
+    const dayTransfers = transfers.filter(t => t.date === dateStr);
     const transferCount = dayTransfers.length;
 
     results.push({
@@ -325,14 +356,18 @@ function main() {
     console.log(`PV発信行: ${pvRows.length}, typeCol=${typeCol}, opCol=${opCol}, destCol=${destCol}`);
   }
 
-  // 転送データ抽出
+  // 転送データ抽出（平日17-19時 / 土曜終日）
   const curTransfers = extractTransfers(curCdr);
   const prevTransfers = extractTransfers(prevCdr);
-  console.log(`転送件数: 今月=${curTransfers.length} 先月=${prevTransfers.length}`);
+  const curWeekdayTransfers = filterWeekdayTransfers(curTransfers);
+  const prevWeekdayTransfers = filterWeekdayTransfers(prevTransfers);
+  const curSatTransfers = filterSaturdayTransfers(curTransfers);
+  const prevSatTransfers = filterSaturdayTransfers(prevTransfers);
+  console.log(`転送件数: 今月=平日${curWeekdayTransfers.length}+土曜${curSatTransfers.length} 先月=平日${prevWeekdayTransfers.length}+土曜${prevSatTransfers.length}`);
 
-  // 日別集計
-  const curDaily = processDailySummary(curAcdSummary, curTransfers, year, month);
-  const prevDaily = processDailySummary(prevAcdSummary, prevTransfers, prevYear, prevMonth);
+  // 日別集計（転送列には平日分＋土曜分の両方を表示）
+  const curDaily = processDailySummary(curAcdSummary, curWeekdayTransfers.concat(curSatTransfers), year, month);
+  const prevDaily = processDailySummary(prevAcdSummary, prevWeekdayTransfers.concat(prevSatTransfers), prevYear, prevMonth);
 
   // 今月集計値
   const curActiveDays = curDaily.filter(d => d.calls > 0).length;
@@ -348,20 +383,11 @@ function main() {
   const prevTotalRate = prevTotalCalls > 0 ? Math.round((prevTotalAnswered / prevTotalCalls) * 1000) / 10 : 0;
   const prevDailyAvg = prevActiveDays > 0 ? Math.round((prevTotalCalls / prevActiveDays) * 10) / 10 : 0;
 
-  // 転送集計（17:00〜19:00のみ）
-  const curTransfers1719 = curTransfers.filter(t => t.hour >= 17 && t.hour < 19);
-  const curTransferTotal = curTransfers1719.length;
-  const curTransferDays = new Set(curTransfers1719.map(t => t.date)).size;
-  const curTransferAvg = curTransferDays > 0 ? Math.round((curTransferTotal / curTransferDays) * 10) / 10 : 0;
-  const curTransferAnswered = curTransfers1719.filter(t => t.answered).length;
-  const curTransferRate = curTransferTotal > 0 ? Math.round((curTransferAnswered / curTransferTotal) * 1000) / 10 : 0;
-
-  const prevTransfers1719 = prevTransfers.filter(t => t.hour >= 17 && t.hour < 19);
-  const prevTransferTotal = prevTransfers1719.length;
-  const prevTransferDays = new Set(prevTransfers1719.map(t => t.date)).size;
-  const prevTransferAvg = prevTransferDays > 0 ? Math.round((prevTransferTotal / prevTransferDays) * 10) / 10 : 0;
-  const prevTransferAnswered = prevTransfers1719.filter(t => t.answered).length;
-  const prevTransferRate = prevTransferTotal > 0 ? Math.round((prevTransferAnswered / prevTransferTotal) * 1000) / 10 : 0;
+  // 転送集計
+  const curTransferSummary = calcTransferSummary(curWeekdayTransfers);
+  const prevTransferSummary = calcTransferSummary(prevWeekdayTransfers);
+  const curSatSummary = calcTransferSummary(curSatTransfers);
+  const prevSatSummary = calcTransferSummary(prevSatTransfers);
 
   // 昨日・今日
   const todayIdx = curDaily.findIndex(d => d.day === now.getDate());
@@ -404,10 +430,10 @@ function main() {
       prev: { total: prevTotalCalls, dailyAvg: prevDailyAvg, rate: prevTotalRate, activeDays: prevActiveDays },
     },
 
-    // 転送受電サマリー
+    // 転送受電サマリー（平日17:00〜19:00）
     transferSummary: {
-      current: { total: curTransferTotal, dailyAvg: curTransferAvg, rate: curTransferRate },
-      prev: { total: prevTransferTotal, dailyAvg: prevTransferAvg, rate: prevTransferRate },
+      current: curTransferSummary,
+      prev: prevTransferSummary,
     },
 
     // 日別実績
@@ -416,10 +442,16 @@ function main() {
     // ACD別
     acd: { current: curAcd, prev: prevAcd },
 
-    // ACD別 転送
+    // ACD別 転送（平日）
     acdTransfer: {
-      current: { total: curTransferTotal, dailyAvg: curTransferAvg, rate: curTransferRate },
-      prev: { total: prevTransferTotal, dailyAvg: prevTransferAvg, rate: prevTransferRate },
+      current: curTransferSummary,
+      prev: prevTransferSummary,
+    },
+
+    // 土曜転送（終日）
+    saturdayTransfer: {
+      current: curSatSummary,
+      prev: prevSatSummary,
     },
 
     // 曜日別平均（全体）
@@ -436,4 +468,13 @@ function main() {
   console.log('=== 完了 ===');
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  extractTransfers,
+  filterWeekdayTransfers,
+  filterSaturdayTransfers,
+  calcTransferSummary,
+};
