@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-11T01:40:32.655Z",
+  "generated": "2026-08-12T01:51:37.033Z",
   "currentMonth": {
     "year": 2026,
     "month": 8,
@@ -13,14 +13,14 @@
     "label": "7月"
   },
   "yesterday": {
-    "date": "2026-08-10",
-    "day": 10,
-    "dow": 1,
-    "dowName": "月",
-    "calls": 12,
-    "answered": 12,
-    "rate": 100,
-    "rateClass": "good",
+    "date": "2026-08-11",
+    "day": 11,
+    "dow": 2,
+    "dowName": "火",
+    "calls": 0,
+    "answered": 0,
+    "rate": 0,
+    "rateClass": "",
     "abandoned": 0,
     "abandonRate": 0,
     "overflow": 0,
@@ -42,8 +42,8 @@
   },
   "transferSummary": {
     "current": {
-      "total": 28,
-      "dailyAvg": 4.7,
+      "total": 29,
+      "dailyAvg": 4.1,
       "rate": 100
     },
     "prev": {
@@ -346,7 +346,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-08-10",
@@ -1018,8 +1018,8 @@
   },
   "acdTransfer": {
     "current": {
-      "total": 28,
-      "dailyAvg": 4.7,
+      "total": 29,
+      "dailyAvg": 4.1,
       "rate": 100
     },
     "prev": {
