@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-13T01:54:04.461Z",
+  "generated": "2026-08-14T01:51:33.556Z",
   "currentMonth": {
     "year": 2026,
     "month": 8,
@@ -13,25 +13,25 @@
     "label": "7月"
   },
   "yesterday": {
-    "date": "2026-08-12",
-    "day": 12,
-    "dow": 3,
-    "dowName": "水",
-    "calls": 23,
+    "date": "2026-08-13",
+    "day": 13,
+    "dow": 4,
+    "dowName": "木",
+    "calls": 13,
     "answered": 0,
     "rate": 0,
     "rateClass": "bad",
-    "abandoned": 19,
-    "abandonRate": 82.6,
-    "overflow": 4,
-    "transferCount": 0
+    "abandoned": 13,
+    "abandonRate": 100,
+    "overflow": 0,
+    "transferCount": 2
   },
   "bbSummary": {
     "current": {
-      "total": 161,
-      "dailyAvg": 23,
-      "rate": 83.2,
-      "activeDays": 7
+      "total": 174,
+      "dailyAvg": 21.8,
+      "rate": 77,
+      "activeDays": 8
     },
     "prev": {
       "total": 423,
@@ -42,8 +42,8 @@
   },
   "transferSummary": {
     "current": {
-      "total": 29,
-      "dailyAvg": 4.1,
+      "total": 31,
+      "dailyAvg": 3.9,
       "rate": 100
     },
     "prev": {
@@ -311,14 +311,14 @@
         "day": 13,
         "dow": 4,
         "dowName": "木",
-        "calls": 0,
+        "calls": 13,
         "answered": 0,
         "rate": 0,
-        "rateClass": "",
-        "abandoned": 0,
-        "abandonRate": 0,
+        "rateClass": "bad",
+        "abandoned": 13,
+        "abandonRate": 100,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 2
       },
       {
         "date": "2026-08-12",
@@ -931,44 +931,44 @@
       {
         "groupId": "8002",
         "name": "tablet",
-        "calls": 50,
+        "calls": 58,
         "answered": 33,
-        "rate": 66,
-        "rateClass": "warn",
-        "abandoned": 13,
-        "abandonRate": 26,
+        "rate": 56.9,
+        "rateClass": "bad",
+        "abandoned": 21,
+        "abandonRate": 36.2,
         "overflow": 4,
         "avgTalkTime": "00:04:16",
         "avgWaitTime": "00:00:15",
-        "dailyAvg": 7.1
+        "dailyAvg": 7.3
       },
       {
         "groupId": "8003",
         "name": "comic",
-        "calls": 31,
+        "calls": 33,
         "answered": 29,
-        "rate": 93.5,
+        "rate": 87.9,
         "rateClass": "good",
-        "abandoned": 2,
-        "abandonRate": 6.5,
+        "abandoned": 4,
+        "abandonRate": 12.1,
         "overflow": 0,
         "avgTalkTime": "00:02:44",
         "avgWaitTime": "00:00:18",
-        "dailyAvg": 4.4
+        "dailyAvg": 4.1
       },
       {
         "groupId": "8004",
         "name": "other",
-        "calls": 80,
+        "calls": 83,
         "answered": 72,
-        "rate": 90,
+        "rate": 86.7,
         "rateClass": "good",
-        "abandoned": 8,
-        "abandonRate": 10,
+        "abandoned": 11,
+        "abandonRate": 13.3,
         "overflow": 0,
         "avgTalkTime": "00:02:42",
         "avgWaitTime": "00:00:11",
-        "dailyAvg": 11.4
+        "dailyAvg": 10.4
       }
     ],
     "prev": [
@@ -1018,8 +1018,8 @@
   },
   "acdTransfer": {
     "current": {
-      "total": 29,
-      "dailyAvg": 4.1,
+      "total": 31,
+      "dailyAvg": 3.9,
       "rate": 100
     },
     "prev": {
@@ -1046,7 +1046,7 @@
       "月": 19.5,
       "火": 18,
       "水": 33,
-      "木": 14,
+      "木": 13.5,
       "金": 24,
       "土": null
     },
@@ -1072,7 +1072,7 @@
         "afterWorkTotal": "13:51:58",
         "avgAfterWork": "9:34",
         "utilization": 0,
-        "dailyAvg": 9
+        "dailyAvg": 7.9
       },
       {
         "loginId": "tablet2",
@@ -1084,7 +1084,7 @@
         "afterWorkTotal": "15:19:47",
         "avgAfterWork": "22:26",
         "utilization": 0,
-        "dailyAvg": 3.1
+        "dailyAvg": 2.8
       },
       {
         "loginId": "comic2",
@@ -1096,7 +1096,7 @@
         "afterWorkTotal": "06:59:25",
         "avgAfterWork": "3:47",
         "utilization": 0,
-        "dailyAvg": 12.4
+        "dailyAvg": 10.9
       }
     ],
     "prev": [
