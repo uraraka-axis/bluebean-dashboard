@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-30T03:49:58.197Z",
+  "generated": "2026-08-31T03:52:14.916Z",
   "currentMonth": {
     "year": 2026,
     "month": 8,
@@ -13,10 +13,10 @@
     "label": "7月"
   },
   "yesterday": {
-    "date": "2026-08-29",
-    "day": 29,
-    "dow": 6,
-    "dowName": "土",
+    "date": "2026-08-30",
+    "day": 30,
+    "dow": 0,
+    "dowName": "日",
     "calls": 0,
     "answered": 0,
     "rate": 0,
@@ -24,7 +24,7 @@
     "abandoned": 0,
     "abandonRate": 0,
     "overflow": 0,
-    "transferCount": 9
+    "transferCount": 0
   },
   "bbSummary": {
     "current": {
