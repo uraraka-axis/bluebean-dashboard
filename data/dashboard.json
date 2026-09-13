@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-12T03:17:14.894Z",
+  "generated": "2026-09-13T03:21:39.652Z",
   "currentMonth": {
     "year": 2026,
     "month": 9,
@@ -13,18 +13,18 @@
     "label": "8月"
   },
   "yesterday": {
-    "date": "2026-09-11",
-    "day": 11,
-    "dow": 5,
-    "dowName": "金",
-    "calls": 29,
-    "answered": 25,
-    "rate": 86.2,
-    "rateClass": "good",
-    "abandoned": 4,
-    "abandonRate": 13.8,
+    "date": "2026-09-12",
+    "day": 12,
+    "dow": 6,
+    "dowName": "土",
+    "calls": 0,
+    "answered": 0,
+    "rate": 0,
+    "rateClass": "",
+    "abandoned": 0,
+    "abandonRate": 0,
     "overflow": 0,
-    "transferCount": 1
+    "transferCount": 0
   },
   "bbSummary": {
     "current": {
