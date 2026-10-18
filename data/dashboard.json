@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-17T03:08:11.883Z",
+  "generated": "2026-10-18T03:11:14.299Z",
   "currentMonth": {
     "year": 2026,
     "month": 10,
@@ -13,18 +13,18 @@
     "label": "9月"
   },
   "yesterday": {
-    "date": "2026-10-16",
-    "day": 16,
-    "dow": 5,
-    "dowName": "金",
-    "calls": 26,
-    "answered": 20,
-    "rate": 76.9,
-    "rateClass": "warn",
-    "abandoned": 6,
-    "abandonRate": 23.1,
+    "date": "2026-10-17",
+    "day": 17,
+    "dow": 6,
+    "dowName": "土",
+    "calls": 0,
+    "answered": 0,
+    "rate": 0,
+    "rateClass": "",
+    "abandoned": 0,
+    "abandonRate": 0,
     "overflow": 0,
-    "transferCount": 1
+    "transferCount": 9
   },
   "bbSummary": {
     "current": {
@@ -262,7 +262,7 @@
         "abandoned": 0,
         "abandonRate": 0,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 9
       },
       {
         "date": "2026-10-16",
@@ -1016,9 +1016,9 @@
   },
   "saturdayTransfer": {
     "current": {
-      "total": 0,
-      "dailyAvg": 0,
-      "rate": 0
+      "total": 9,
+      "dailyAvg": 9,
+      "rate": 77.8
     },
     "prev": {
       "total": 20,
