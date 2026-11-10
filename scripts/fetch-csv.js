@@ -17,6 +17,9 @@ const fs = require('fs');
 const BB_URL = process.env.BB_URL || 'https://bbw3476-uraraka.softsu.com';
 const BB_USER = process.env.BB_USER || 'admin';
 const BB_PASS = process.env.BB_PASS || 'Uraraka2026##';
+// 2026-10-22〜 BlueBean側でサーバー全体に事前ログイン(Basic認証)が追加された
+const BB_BASIC_USER = process.env.BB_BASIC_USER || '';
+const BB_BASIC_PASS = process.env.BB_BASIC_PASS || '';
 
 // JST日時を取得（GitHub ActionsはUTCで動くため）
 function jstNow() {
@@ -245,7 +248,11 @@ async function main() {
   console.log('');
 
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ acceptDownloads: true });
+  const contextOptions = { acceptDownloads: true };
+  if (BB_BASIC_USER) {
+    contextOptions.httpCredentials = { username: BB_BASIC_USER, password: BB_BASIC_PASS };
+  }
+  const context = await browser.newContext(contextOptions);
   const page = await context.newPage();
 
   try {

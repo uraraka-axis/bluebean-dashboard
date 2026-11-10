@@ -11,7 +11,8 @@ permissions:
 
 jobs:
   fetch-and-process:
-    runs-on: ubuntu-latest
+    # ubuntu-latest(26.04)はPlaywright 1.59未対応のため固定
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:
@@ -34,6 +35,8 @@ jobs:
           BB_URL: ${{ secrets.BB_URL }}
           BB_USER: ${{ secrets.BB_USER }}
           BB_PASS: ${{ secrets.BB_PASS }}
+          BB_BASIC_USER: ${{ secrets.BB_BASIC_USER }}
+          BB_BASIC_PASS: ${{ secrets.BB_BASIC_PASS }}
         run: node scripts/fetch-csv.js
 
       - name: CSV → JSON 集計
