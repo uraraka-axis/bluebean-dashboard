@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-13T05:14:48.364Z",
+  "generated": "2026-11-14T05:04:29.431Z",
   "currentMonth": {
     "year": 2026,
     "month": 11,
@@ -13,25 +13,25 @@
     "label": "10月"
   },
   "yesterday": {
-    "date": "2026-11-12",
-    "day": 12,
-    "dow": 4,
-    "dowName": "木",
-    "calls": 27,
-    "answered": 15,
-    "rate": 55.6,
+    "date": "2026-11-13",
+    "day": 13,
+    "dow": 5,
+    "dowName": "金",
+    "calls": 17,
+    "answered": 10,
+    "rate": 58.8,
     "rateClass": "bad",
-    "abandoned": 10,
-    "abandonRate": 37,
-    "overflow": 2,
-    "transferCount": 0
+    "abandoned": 7,
+    "abandonRate": 41.2,
+    "overflow": 0,
+    "transferCount": 1
   },
   "bbSummary": {
     "current": {
-      "total": 183,
-      "dailyAvg": 20.3,
-      "rate": 83.1,
-      "activeDays": 9
+      "total": 200,
+      "dailyAvg": 20,
+      "rate": 81,
+      "activeDays": 10
     },
     "prev": {
       "total": 445,
@@ -42,8 +42,8 @@
   },
   "transferSummary": {
     "current": {
-      "total": 17,
-      "dailyAvg": 2.4,
+      "total": 18,
+      "dailyAvg": 2.3,
       "rate": 100
     },
     "prev": {
@@ -297,14 +297,14 @@
         "day": 13,
         "dow": 5,
         "dowName": "金",
-        "calls": 0,
-        "answered": 0,
-        "rate": 0,
-        "rateClass": "",
-        "abandoned": 0,
-        "abandonRate": 0,
+        "calls": 17,
+        "answered": 10,
+        "rate": 58.8,
+        "rateClass": "bad",
+        "abandoned": 7,
+        "abandonRate": 41.2,
         "overflow": 0,
-        "transferCount": 0
+        "transferCount": 1
       },
       {
         "date": "2026-11-12",
@@ -917,54 +917,54 @@
       {
         "groupId": "8002",
         "name": "tablet",
-        "calls": 80,
-        "answered": 78,
-        "rate": 97.5,
+        "calls": 84,
+        "answered": 82,
+        "rate": 97.6,
         "rateClass": "good",
         "abandoned": 2,
-        "abandonRate": 2.5,
+        "abandonRate": 2.4,
         "overflow": 0,
-        "avgTalkTime": "00:04:22",
+        "avgTalkTime": "00:04:20",
         "avgWaitTime": "00:00:22",
-        "dailyAvg": 8.9
+        "dailyAvg": 8.4
       },
       {
         "groupId": "8003",
         "name": "comic",
-        "calls": 46,
-        "answered": 45,
-        "rate": 97.8,
+        "calls": 51,
+        "answered": 50,
+        "rate": 98,
         "rateClass": "good",
         "abandoned": 1,
-        "abandonRate": 2.2,
+        "abandonRate": 2,
         "overflow": 0,
-        "avgTalkTime": "00:04:07",
+        "avgTalkTime": "00:04:00",
         "avgWaitTime": "00:00:13",
         "dailyAvg": 5.1
       },
       {
         "groupId": "8004",
         "name": "other",
-        "calls": 51,
-        "answered": 26,
-        "rate": 51,
+        "calls": 58,
+        "answered": 27,
+        "rate": 46.6,
         "rateClass": "bad",
-        "abandoned": 23,
-        "abandonRate": 45.1,
+        "abandoned": 29,
+        "abandonRate": 50,
         "overflow": 2,
-        "avgTalkTime": "00:03:49",
-        "avgWaitTime": "00:00:22",
-        "dailyAvg": 5.7
+        "avgTalkTime": "00:03:47",
+        "avgWaitTime": "00:00:21",
+        "dailyAvg": 5.8
       },
       {
         "groupId": "8005",
         "name": "nagasakist",
-        "calls": 6,
+        "calls": 7,
         "answered": 3,
-        "rate": 50,
+        "rate": 42.9,
         "rateClass": "bad",
-        "abandoned": 3,
-        "abandonRate": 50,
+        "abandoned": 4,
+        "abandonRate": 57.1,
         "overflow": 0,
         "avgTalkTime": "00:00:59",
         "avgWaitTime": "00:00:11",
@@ -1018,8 +1018,8 @@
   },
   "acdTransfer": {
     "current": {
-      "total": 17,
-      "dailyAvg": 2.4,
+      "total": 18,
+      "dailyAvg": 2.3,
       "rate": 100
     },
     "prev": {
@@ -1047,7 +1047,7 @@
       "火": 18,
       "水": 18,
       "木": 23,
-      "金": 28,
+      "金": 22.5,
       "土": 11
     },
     "prev": {
@@ -1065,26 +1065,26 @@
       {
         "loginId": "tablet1",
         "name": "tablet1",
-        "talkCount": 61,
-        "acceptCount": 74,
-        "talkTimeTotal": "04:35:08",
-        "avgTalkTime": "4:31",
-        "afterWorkTotal": "11:43:27",
-        "avgAfterWork": "9:30",
+        "talkCount": 64,
+        "acceptCount": 79,
+        "talkTimeTotal": "04:45:16",
+        "avgTalkTime": "4:27",
+        "afterWorkTotal": "12:04:49",
+        "avgAfterWork": "9:10",
         "utilization": 0,
-        "dailyAvg": 6.8
+        "dailyAvg": 6.4
       },
       {
         "loginId": "tablet2",
         "name": "tablet2",
-        "talkCount": 24,
-        "acceptCount": 54,
-        "talkTimeTotal": "01:18:50",
-        "avgTalkTime": "3:17",
-        "afterWorkTotal": "04:29:40",
-        "avgAfterWork": "5:00",
+        "talkCount": 26,
+        "acceptCount": 59,
+        "talkTimeTotal": "01:24:33",
+        "avgTalkTime": "3:15",
+        "afterWorkTotal": "04:37:48",
+        "avgAfterWork": "4:43",
         "utilization": 0,
-        "dailyAvg": 2.7
+        "dailyAvg": 2.6
       },
       {
         "loginId": "comic1",
@@ -1101,26 +1101,26 @@
       {
         "loginId": "comic2",
         "name": "comic2",
-        "talkCount": 69,
-        "acceptCount": 123,
-        "talkTimeTotal": "04:11:54",
-        "avgTalkTime": "3:39",
-        "afterWorkTotal": "06:25:45",
-        "avgAfterWork": "3:08",
+        "talkCount": 76,
+        "acceptCount": 134,
+        "talkTimeTotal": "04:32:10",
+        "avgTalkTime": "3:35",
+        "afterWorkTotal": "06:54:37",
+        "avgAfterWork": "3:06",
         "utilization": 0,
-        "dailyAvg": 7.7
+        "dailyAvg": 7.6
       },
       {
         "loginId": "other",
         "name": "other",
-        "talkCount": 22,
-        "acceptCount": 36,
-        "talkTimeTotal": "01:22:04",
-        "avgTalkTime": "3:44",
-        "afterWorkTotal": "25:17:54",
-        "avgAfterWork": "42:10",
+        "talkCount": 23,
+        "acceptCount": 40,
+        "talkTimeTotal": "01:24:38",
+        "avgTalkTime": "3:41",
+        "afterWorkTotal": "28:50:32",
+        "avgAfterWork": "43:16",
         "utilization": 0,
-        "dailyAvg": 2.4
+        "dailyAvg": 2.3
       },
       {
         "loginId": "nagasakist",
