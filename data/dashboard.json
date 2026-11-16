@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-15T04:58:49.149Z",
+  "generated": "2026-11-16T04:55:49.163Z",
   "currentMonth": {
     "year": 2026,
     "month": 11,
@@ -13,10 +13,10 @@
     "label": "10月"
   },
   "yesterday": {
-    "date": "2026-11-14",
-    "day": 14,
-    "dow": 6,
-    "dowName": "土",
+    "date": "2026-11-15",
+    "day": 15,
+    "dow": 0,
+    "dowName": "日",
     "calls": 0,
     "answered": 0,
     "rate": 0,
